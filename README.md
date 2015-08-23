@@ -145,7 +145,9 @@ $scope.entry = Movie.get({ id: $scope.id }, function() {
 It follows the same steps as above, except the request type is DELETE instead of PUT.
 
 We have covered all the operations in a CRUD, but left with a small thing. The `$resource` function also has an
-optional fourth parameter. This is a hash with custom settings. Currently, there is only one setting available which is stripTrailingSlashes. By default this is set to true, which means trailing slashes will be removed from the URL you pass to $resource(). If you want to turn this off you can do so like this:
+optional fourth parameter. This is a hash with custom settings. Currently, there is only one setting available which 
+is `stripTrailingSlashes`. By default this is set to true, which means trailing slashes will be removed from the URL 
+you pass to `$resource()`. If you want to turn this off you can do so like this:
 
 ```javascript
 angular.module('myApp.services').factory('Entry', function($resource) {
@@ -204,7 +206,8 @@ movieApp
 Just note that we will be using Angular UI Router for routing.
 
 Creating Our Service to Interact with REST Endpoints
-As discussed in previous sections we will create a custom service that will use $resource internally to interact with the REST API. The service is defined in js/services.js.
+As discussed in previous sections we will create a custom service that will use `$resource` internally to interact 
+with the REST API. The service is defined in js/services.js.
 
 services.js:
 ```javascript
@@ -217,11 +220,12 @@ angular.module('movieApp.services', []).factory('Movie', function($resource) {
 });
 ```
 
-The name of our factory is Movie. As we are using MongoDB, each movie instance has a property called _id. The rest is simple and straightforward.
+The name of our factory is Movie. As we are using MongoDB, each movie instance has a property called `_id`. The rest 
+is simple and straightforward.
 
 Now that we have our service ready let’s build views and controllers.
 
-index.html : Building the App Entry Page
+## index.html : Building the App Entry Page
 The index.html is our app entry point. To start we need to include all the required scripts and stylesheets in this page. We will use Bootstrap to quickly create the layout. Here is the content of index.html.
 
 ```
