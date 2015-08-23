@@ -1,0 +1,27 @@
+<table class="table itemtable">
+	<tbody>
+		<tr>
+			<td><h3>Details for {{item.title}}</h3></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td>Title</td>
+			<td>{{item.title}}</td>
+		</tr>
+		<tr>
+			<td>Description</td>
+			<td>{{item.description}}</td>
+		</tr>
+		<tr>
+			<td>Price</td>
+			<td>{{item.price}}</td>
+		</tr>
+		<tr>
+			<td>Tags</td>
+			<td>{{item.tags}}</td>
+		</tr>
+	</tbody>
+</table>
+<div>
+	<a class="btn btn-primary" ui-sref="editItem({id:item._id})" title="Edit">Edit</a>
+</div>

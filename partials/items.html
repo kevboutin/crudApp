@@ -1,0 +1,16 @@
+<a ui-sref="newItem" class="btn-primary btn-lg nodecoration" title="Add New Item">Add New Item</a>
+<table class="table itemtable">
+	<tbody>
+		<tr>
+			<td><h3>All Items</h3></td>
+			<td></td>
+		</tr>
+		<tr ng-repeat="item in items">
+			<td>{{item.title}}</td>
+			<td>
+				<a class="btn btn-primary" ui-sref="viewItem({id:item._id})" title="View">View</a>
+				<a class="btn btn-danger" ng-click="deleteItem(item)" title="Delete">Delete</a>
+			</td>
+		</tr>
+	</tbody>
+</table>
