@@ -3,27 +3,24 @@ var fs = require('fs');
 var path = require('path');
 
 var gulp = require('gulp');
-var plugins = require('gulp-load-plugins')(); // Load all gulp plugins
-																							// automatically and attach
-																							// them to the `plugins` object
+var plugins = require('gulp-load-plugins')(); // Load all gulp plugins automatically
 
-var runSequence = require('run-sequence');    // Temporary solution until gulp 4
-																							// https://github.com/gulpjs/gulp/issues/355
+var runSequence = require('run-sequence');    // Temporary solution until gulp 4 (https://github.com/gulpjs/gulp/issues/355)
 
 var pkg = require('./package.json');
-var dirs = pkg['configs'].directories;
+var dirs = pkg.configs.directories;
 
 // ---------------------------------------------------------------------
 // | Helper tasks                                                      |
 // ---------------------------------------------------------------------
 
 gulp.task('archive:create_archive_dir', function () {
-	"use strict";
+	'use strict';
 	fs.mkdirSync(path.resolve(dirs.archive), '0755');
 });
 
 gulp.task('archive:zip', function (done) {
-	"use strict";
+	'use strict';
 
 	var archiveName = path.resolve(dirs.archive, pkg.name + '_v' + pkg.version + '.zip');
 	var archiver = require('archiver')('zip');
@@ -59,7 +56,7 @@ gulp.task('archive:zip', function (done) {
 });
 
 gulp.task('clean', function (done) {
-	"use strict";
+	'use strict';
 	require('del')([
 		dirs.archive,
 		dirs.dist
@@ -75,27 +72,27 @@ gulp.task('copy', [
 ]);
 
 gulp.task('copy:.htaccess', function () {
-	"use strict";
+	'use strict';
 	return gulp.src('node_modules/apache-server-configs/dist/.htaccess')
 			.pipe(plugins.replace(/# ErrorDocument/g, 'ErrorDocument'))
 			.pipe(gulp.dest(dirs.dist));
 });
 
 gulp.task('copy:index.html', function () {
-	"use strict";
+	'use strict';
 	return gulp.src(dirs.src + '/index.html')
 			.pipe(plugins.replace(/{{JQUERY_VERSION}}/g, pkg.devDependencies.jquery))
 			.pipe(gulp.dest(dirs.dist));
 });
 
 gulp.task('copy:license', function () {
-	"use strict";
+	'use strict';
 	return gulp.src('LICENSE.txt')
 			.pipe(gulp.dest(dirs.dist));
 });
 
 gulp.task('copy:misc', function () {
-	"use strict";
+	'use strict';
 	return gulp.src([
 
 		// Copy all files
@@ -103,7 +100,7 @@ gulp.task('copy:misc', function () {
 
 		// Exclude the following files
 		// (other tasks will handle the copying of these files)
-		//'!' + dirs.src + '/css/main.css',
+		// '!' + dirs.src + '/css/main.css',
 		'!' + dirs.src + '/index.html'
 
 	], {
@@ -115,21 +112,20 @@ gulp.task('copy:misc', function () {
 });
 
 gulp.task('copy:normalize', function () {
-	"use strict";
+	'use strict';
 	return gulp.src('node_modules/normalize.css/normalize.css')
 			.pipe(gulp.dest(dirs.dist + '/css'));
 });
 
 gulp.task('lint:js', function () {
-	"use strict";
+	'use strict';
 	return gulp.src([
 		'gulpfile.js',
 		dirs.src + '/js/*.js',
 		dirs.test + '/*.js'
 	]).pipe(plugins.jscs())
 			.pipe(plugins.jshint())
-			.pipe(plugins.jshint.reporter('jshint-stylish'))
-			.pipe(plugins.jshint.reporter('fail'));
+			.pipe(plugins.jshint.reporter('jshint-stylish'));
 });
 
 
@@ -138,7 +134,7 @@ gulp.task('lint:js', function () {
 // ---------------------------------------------------------------------
 
 gulp.task('archive', function (done) {
-	"use strict";
+	'use strict';
 	runSequence(
 			'build',
 			'archive:create_archive_dir',
@@ -147,7 +143,7 @@ gulp.task('archive', function (done) {
 });
 
 gulp.task('build', function (done) {
-	"use strict";
+	'use strict';
 	runSequence(
 			['clean', 'lint:js'],
 			'copy',

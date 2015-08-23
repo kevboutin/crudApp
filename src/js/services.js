@@ -3,7 +3,7 @@
  */
 
 angular.module('crudApp.services', []).factory('Item', function ($resource) {
-	return $resource('http://crudapp-13434.onmodulus.net/api/items/:id', {id: '@_id'}, {
+	return $resource('http://crudapp.weprovideit.com/api/items/:id', { id: '@_id' }, {
 		update: {
 			method: 'PUT'
 		}
@@ -11,5 +11,5 @@ angular.module('crudApp.services', []).factory('Item', function ($resource) {
 }).service('popupService', function ($window) {
 	this.showPopup = function (message) {
 		return $window.confirm(message);
-	}
+	};
 });

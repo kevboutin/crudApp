@@ -61,7 +61,7 @@
         "beforeOpeningCurlyBrace": true
     },
     "requireSpacesInsideObjectBrackets": "allButNested",
-    "validateIndentation": 4,
+    "validateIndentation": "\t",
     "validateLineBreaks": "LF",
     "validateParameterSeparator": ", ",
     "validateQuoteMarks": "'"

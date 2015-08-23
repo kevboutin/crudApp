@@ -11,11 +11,11 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 				$window.location.href = '';
 			});
 		}
-	}
+	};
 
 }).controller('ItemViewController', function ($scope, $stateParams, Item) {
 
-	$scope.item = Item.get({id: $stateParams.id});
+	$scope.item = Item.get({ id: $stateParams.id });
 
 }).controller('ItemCreateController', function ($scope, $state, $stateParams, Item) {
 
@@ -25,7 +25,7 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 		$scope.item.$save(function () {
 			$state.go('items');
 		});
-	}
+	};
 
 }).controller('ItemEditController', function ($scope, $state, $stateParams, Item) {
 
@@ -36,7 +36,7 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 	};
 
 	$scope.loadItem = function () {
-		$scope.item = Item.get({id: $stateParams.id});
+		$scope.item = Item.get({ id: $stateParams.id });
 	};
 
 	$scope.loadItem();
