@@ -68,6 +68,7 @@ gulp.task('copy', [
 	'copy:index.html',
 	'copy:license',
 	'copy:misc',
+	'copy:bootstrap',
 	'copy:normalize'
 ]);
 
@@ -109,6 +110,12 @@ gulp.task('copy:misc', function () {
 		dot: true
 
 	}).pipe(gulp.dest(dirs.dist));
+});
+
+gulp.task('copy:bootstrap', function () {
+	'use strict';
+	return gulp.src('node_modules/bootstrap/dist/css/bootstrap.min.css')
+			.pipe(gulp.dest(dirs.dist + '/css'));
 });
 
 gulp.task('copy:normalize', function () {
