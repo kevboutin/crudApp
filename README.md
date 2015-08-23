@@ -173,12 +173,19 @@ Just note that the API I have built is CORS enabled, so it is possible for you t
 and use the URL [http://movieapp-sitepointdemos.rhcloud.com/](http://movieapp-sitepointdemos.rhcloud.com/) as the API
 . You can develop the Angular app and play around with it without worrying about the backend.
 
-Our API
+## Our API
 I have created a RESTful backend using Node and Express. Take a look at the following screenshot to get to know the API.
 
-REST API
+| URI           | HTTP Verb | POST Body   | Result                |
+| ------------- | --------- | ----------- | --------------------- |
+| api/items     | GET       | empty       | Returns all items     |
+| api/items     | POST      | JSON string | New entry created     |
+| api/items/:id | GET       | empty       | Returns single item   |
+| api/items/:id | PUT       | JSON string | Updates existing item |
+| api/items/:id | DELETE    | empty       | Deletes existing item |
 
-Directory Structure
+
+### Directory Structure
 Let’s start with the following directory structure for our AngularJS app:
 
 ```
@@ -205,9 +212,9 @@ movieApp
 
 Just note that we will be using Angular UI Router for routing.
 
-Creating Our Service to Interact with REST Endpoints
+## Creating Our Service to Interact with REST Endpoints
 As discussed in previous sections we will create a custom service that will use `$resource` internally to interact 
-with the REST API. The service is defined in js/services.js.
+with the REST API. The service is defined in `js/services.js`.
 
 services.js:
 ```javascript
@@ -225,8 +232,9 @@ is simple and straightforward.
 
 Now that we have our service ready let’s build views and controllers.
 
-## index.html : Building the App Entry Page
-The index.html is our app entry point. To start we need to include all the required scripts and stylesheets in this page. We will use Bootstrap to quickly create the layout. Here is the content of index.html.
+### index.html : Building the App Entry Page
+The `index.html` is our app entry point. To start we need to include all the required scripts and stylesheets in this 
+page. We will use Bootstrap to quickly create the layout. Here is the content of `index.html`.
 
 ```
 <!DOCTYPE html>
@@ -273,8 +281,8 @@ The index.html is our app entry point. To start we need to include all the requi
 The markup is pretty self explanatory. Just pay special attention to `<div ui-view></div>`. The ui-view directive
 comes from UI Router module and acts as a container for our views.
 
-Creating Main Module and States
-Our main module and states are defined in js/app.js:
+### Creating Main Module and States
+Our main module and states are defined in `js/app.js`:
 
 app.js:
 ```javascript
@@ -305,22 +313,31 @@ angular.module('movieApp').config(function($stateProvider) {
 
 So, our application has the following four states:
 
-1 movies
-2 viewMovie
-3 newMovie
-4 editMovie
+1. movies
+2. viewMovie
+3. newMovie
+4. editMovie
 
-Each state is composed of a url, templateUrl and controller. Also note that when our main module is loaded we make a transition to state movies showing all the movies in our system. Take a look at the following screenshot to know which state corresponds to what URL.
+Each state is composed of a url, templateUrl and controller. Also note that when our main module is loaded we make a 
+transition to state movies showing all the movies in our system. Take a look at the following table to know which state 
+corresponds to what URI.
 
-State to Resource Mapping
+| State     | URI               |
+| --------- | ----------------- |
+| movies    | #/movies          |
+| newMovie  | #/movies/new      |
+| editMovie | #/movies/:id/edit |
+| viewMovie | #/movies/:id/view |
 
-Creating Templates
+
+### Creating Templates
 All of our templates are inside partials. Let’s see what each of them does!
 
 _form.html:
-_form.html contains a simple form which allows users to enter data. Note that this form will be included by movie-add.html and movie-edit.html because both of them accept inputs from users.
+`_form.html` contains a simple form which allows users to enter data. Note that this form will be included by 
+movie-add.html and movie-edit.html because both of them accept inputs from users.
 
-Here is the content of _form.html:
+Here is the content of `_form.html`:
 
 ```
 <div class="form-group">
@@ -356,7 +373,7 @@ Here is the content of _form.html:
 
 The template uses ng-model to bind various movie details to different properties of scope model movie.
 
-movie-add.html
+movie-add.html:
 This template is used to accept user inputs and add a new movie to our system. Here is the content:
 
 ```
@@ -365,7 +382,8 @@ This template is used to accept user inputs and add a new movie to our system. H
 </form>
 ```
 
-When the form is submitted the function addMovie() of the scope is called which in turn sends a POST request to server to create a new movie.
+When the form is submitted the function `addMovie()` of the scope is called which in turn sends a POST request to 
+server to create a new movie.
 
 movie-edit.html:
 This template is used to accept user inputs and update an existing movie in our system.
@@ -376,7 +394,8 @@ This template is used to accept user inputs and update an existing movie in our 
 </form>
 ```
 
-Once the form is submitted the scope function updateMovie() is called which issues a PUT request to server to update a movie.
+Once the form is submitted the scope function `updateMovie()` is called which issues a PUT request to server to update
+ a movie.
 
 movie-view.html:
 This template is used to show details about a single movie. The content looks like following:
@@ -409,9 +428,10 @@ This template is used to show details about a single movie. The content looks li
 </div>
 ```
 
-In the end there is an edit button. Once clicked it changes the state to editMovie with the movie id in the $stateParams.
+In the end there is an edit button. Once clicked it changes the state to editMovie with the movie id in the 
+`$stateParams`.
 
-movies.html
+movies.html:
 This template displays all the movies in the system.
 
 ```
@@ -432,12 +452,15 @@ This template displays all the movies in the system.
 </table>
 ```
 
-It loops through all the movie objects obtained from the API and displays the details. There is also a button Add New Movie which changes the state to newMovie. As a result a new route loads and we can create a new movie entry.
+It loops through all the movie objects obtained from the API and displays the details. There is also a button Add New
+ Movie which changes the state to `newMovie`. As a result a new route loads and we can create a new movie entry.
 
 For each movie there are two buttons, View and Delete. View triggers a state transition so that the details for the movie are displayed. Delete button deletes the movie permanently.
 
-Creating Controllers
-Each state has a controller. So, in total we have four controllers for four states. All the controllers go into js/controllers.js. The controllers just utilize our custom service Movie and work the way we have discussed above. So, here is how our controllers look.
+### Creating Controllers
+Each state has a controller. So, in total we have four controllers for four states. All the controllers go into 
+`js/controllers.js`. The controllers just utilize our custom service Movie and work the way we have discussed above. 
+So, here is how our controllers look.
 
 controllers.js:
 
@@ -478,6 +501,6 @@ angular.module('movieApp.controllers', []).controller('MovieListController', fun
 ```
 
 ## Conclusion
-Assuming the app is deployed under localhost/movieApp, you can access it at [http://localhost/movieApp/index.html](http://localhost/movieApp/index.html). If
- you are a movie lover, you can start adding your favorite movies too! The source code for the app developd in this article is available on GitHub for download.
+Assuming the app is deployed under `localhost/movieApp`, you can access it at [http://localhost/movieApp/index.html]
+(http://localhost/movieApp/index.html).
 
