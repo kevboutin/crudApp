@@ -534,3 +534,12 @@ Assuming the app is deployed under `localhost/crudApp`, you can access it at [ht
 
 ## License
 The code is available under the [MIT license](LICENSE.txt).
+
+## Usage
+Download or clone the repository and then type the following commands:
+```
+$ npm install
+$ gulp
+```
+
+If the build is successful, deploy the archive or dist directory.

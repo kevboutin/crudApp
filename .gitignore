@@ -3,6 +3,7 @@
 publish/
 intermediate/
 dist/
+archive/
 
 # Compiled source #
 ###################
