@@ -243,7 +243,7 @@ Now that we have our service ready let’s build views and controllers.
 The `index.html` is our app entry point. To start we need to include all the required scripts and stylesheets in this 
 page. We will use Bootstrap to quickly create the layout. Here is the content of `index.html`.
 
-```
+```html
 <!DOCTYPE html>
 <html data-ng-app="crudApp">
 <head lang="en">
@@ -348,7 +348,7 @@ item-add.html and item-edit.html because both of them accept inputs from users.
 
 Here is the content of `_form.html`:
 
-```
+```html
 <div class="form-group">
 	<label for="title" class="col-sm-2 control-label">Title</label>
 
@@ -393,7 +393,7 @@ The template uses ng-model to bind various movie details to different properties
 item-add.html:
 This template is used to accept user inputs and add a new movie to our system. Here is the content:
 
-```
+```html
 <form class="form-horizontal" role="form" ng-submit="addItem()">
   <div ng-include="'partials/_form.html'"></div>
 </form>
@@ -405,7 +405,7 @@ server to create a new item.
 item-edit.html:
 This template is used to accept user inputs and update an existing movie in our system.
 
-```
+```html
 <form class="form-horizontal" role="form" ng-submit="updateItem()">
   <div ng-include="'partials/_form.html'"></div>
 </form>
@@ -417,7 +417,7 @@ Once the form is submitted the scope function `updateItem()` is called which iss
 item-view.html:
 This template is used to show details about a single item. The content looks like following:
 
-```
+```html
 <table class="table itemtable">
 	<tbody>
 		<tr>
@@ -453,7 +453,7 @@ In the end there is an edit button. Once clicked it changes the state to editMov
 items.html:
 This template displays all the movies in the system.
 
-```
+```html
 <a ui-sref="newItem" class="btn-primary btn-lg nodecoration" title="Add New Item">Add New Item</a>
 <table class="table itemtable">
 	<tbody>
