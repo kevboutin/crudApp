@@ -532,3 +532,5 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 Assuming the app is deployed under `localhost/crudApp`, you can access it at [http://localhost/crudApp/index.html]
 (http://localhost/crudApp/index.html).
 
+## License
+The code is available under the [MIT license](LICENSE.txt).
