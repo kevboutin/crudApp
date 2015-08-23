@@ -536,7 +536,8 @@ Assuming the app is deployed under `localhost/crudApp`, you can access it at [ht
 The code is available under the [MIT license](LICENSE.txt).
 
 ## Usage
-Download or clone the repository and then type the following commands:
+Download or clone the repository, change the domain in the URL contained within `src/js/services.js` to point to the 
+RESTful API containing the data and then type the following commands:
 ```
 $ npm install
 $ gulp

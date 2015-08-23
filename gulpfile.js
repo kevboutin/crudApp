@@ -143,18 +143,18 @@ gulp.task('lint:js', function () {
 gulp.task('archive', function (done) {
 	'use strict';
 	runSequence(
-			'build',
-			'archive:create_archive_dir',
-			'archive:zip',
-			done);
+		'build',
+		'archive:create_archive_dir',
+		'archive:zip',
+		done);
 });
 
 gulp.task('build', function (done) {
 	'use strict';
 	runSequence(
-			['clean', 'lint:js'],
-			'copy',
-			done);
+		['clean', 'lint:js'],
+		'copy',
+		done);
 });
 
-gulp.task('default', ['build']);
+gulp.task('default', ['archive']);
