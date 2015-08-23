@@ -79,8 +79,8 @@ out of this class, set various properties on it and finally save the object to b
 
 Ideally, you will only use `get()` and `query()` on the resource class (Entry in our case). All the non GET methods like
  `save()` and `delete()` are also available in the instance obtained by calling `new Entry()` (call this a `$resource`
- instance). But the difference is that these methods are prefixed with a $. So, the methods available in the
- `$resource` instance (as opposed to $resource class) are:
+ instance). But the difference is that these methods are prefixed with a `$`. So, the methods available in the
+ `$resource` instance (as opposed to `$resource` class) are:
 
 1. $save()
 2. $delete()
@@ -172,11 +172,11 @@ interact with the REST API. You can check out a live demo of what we are going t
 .com/crudApp/).
 
 Just note that the API I have built is CORS enabled, so it is possible for you to create an Angular app separately 
-and use the URL [http://movieapp-sitepointdemos.rhcloud.com/](http://movieapp-sitepointdemos.rhcloud.com/) as the API
+and use the URL [http://crudapp-weprovideit.com/](http://crudapp-weprovideit.com/) as the API
 . You can develop the Angular app and play around with it without worrying about the backend.
 
 ## Our API
-I have created a RESTful backend using Node and Express. Take a look at the following screenshot to get to know the API.
+I have created a RESTful backend using PHP and MySQL. Take a look at the following screenshot to get to know the API.
 
 | URI           | HTTP Verb | POST Body   | Result                |
 | ------------- | --------- | ----------- | --------------------- |
@@ -528,6 +528,6 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 ```
 
 ## Conclusion
-Assuming the app is deployed under `localhost/crudApp`, you can access it at [http://localhost/movieApp/index.html]
-(http://localhost/movieApp/index.html).
+Assuming the app is deployed under `localhost/crudApp`, you can access it at [http://localhost/crudApp/index.html]
+(http://localhost/crudApp/index.html).
 
