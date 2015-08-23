@@ -1,5 +1,5 @@
 # crudApp
-Basic CRUD application in Angular.js for maintaining products/items with a RESTful service.
+Basic CRUD web application in AngularJS for maintaining products/items with a RESTful service.
 
 ## Getting Started
 Angular's `$resource` expects a classic RESTful backend. This means you should have REST endpoints in the following
@@ -14,7 +14,8 @@ format:
 | http://yourdomain.com/api/entries/:id | DELETE    | empty       | Deletes existing entry |
 
 You can create the endpoints using the server side language of your choice. Using Node + Express + MongoDB to design
-the RESTful API is popular but also PHP + MySQL is also popular. Once you have the URLs ready, you can make use of
+the RESTful API is popular but also PHP + MySQL is popular even if older. Once you have the URLs ready, 
+you can make use of
 `$resource` for interacting with these URLs. So, let’s see how exactly `$resource` works.
 
 ## How Does $resource Work?
