@@ -101,7 +101,7 @@ operation we need to modify our custom factory Entity as shown below.
 
 ```javascript
 angular.module('myApp.services').factory('Entry', function ($resource) {
-  return $resource('/api/entries/:id', { id: '@_id' }, {
+  return $resource('/api/entries/:id', { id: '@id' }, {
     update: {
       method: 'PUT' // this method issues a PUT request
     }
@@ -152,7 +152,7 @@ you pass to `$resource()`. If you want to turn this off you can do so like this:
 
 ```javascript
 angular.module('myApp.services').factory('Entry', function ($resource) {
-  return $resource('/api/entries/:id', { id: '@_id' }, {
+  return $resource('/api/entries/:id', { id: '@id' }, {
     update: {
       method: 'PUT' // this method issues a PUT request
     }
@@ -177,7 +177,7 @@ and use the URL [http://crudapp-weprovideit.com/](http://crudapp-weprovideit.com
 . You can develop the Angular app and play around with it without worrying about the backend.
 
 ## Our API
-I have created a RESTful backend using PHP and MySQL. Take a look at the following screenshot to get to know the API.
+I have created a RESTful backend using PHP and MySQL. Take a look at the following table to get to know the API.
 
 | URI           | HTTP Verb | POST Body   | Result                |
 | ------------- | --------- | ----------- | --------------------- |
@@ -443,7 +443,7 @@ This template is used to show details about a single item. The content looks lik
 	</tbody>
 </table>
 <div>
-	<a class="btn btn-primary" ui-sref="editItem({id:item._id})" title="Edit">Edit</a>
+	<a class="btn btn-primary" ui-sref="editItem({id:item.id})" title="Edit">Edit</a>
 </div>
 ```
 
@@ -464,7 +464,7 @@ This template displays all the items in the system.
 		<tr ng-repeat="item in items">
 			<td>{{item.title}}</td>
 			<td>
-				<a class="btn btn-primary" ui-sref="viewItem({id:item._id})" title="View">View</a>
+				<a class="btn btn-primary" ui-sref="viewItem({id:item.id})" title="View">View</a>
 				<a class="btn btn-danger" ng-click="deleteItem(item)" title="Delete">Delete</a>
 			</td>
 		</tr>

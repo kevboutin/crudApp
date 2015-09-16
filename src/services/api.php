@@ -11,7 +11,7 @@ require_once("rest.inc.php");
  * 			// Your code goes here
  * 		}
  *
- * Use the following for sanitized input:
+ * Use the following for sanitized input (note the preceding underscore):
  * 		$object->_request['example']
  *
  * Use the following for responses:
@@ -19,29 +19,20 @@ require_once("rest.inc.php");
  */
 class API extends REST
 {
+	public $data = "";
 
-public $data = "";
+	const DB_SERVER = "127.0.0.1";
+	const DB_USER = "itemadmin";
+	const DB_PASSWORD = "";
+	const DB = "prefix_shop";
 
-const DB_SERVER = "127.0.0.1";
-const DB_USER = "itemadmin";
-const DB_PASSWORD = "";
-const DB = "prefix_shop";
+	private $db = NULL;
+	private $mysqli = NULL;
 
-private $db = NULL;
-private $mysqli = NULL;
-
-public function __construct()
-{
-	parent::__construct();        // Init parent constructor
-	$this->dbConnect();          // Initiate Database connection
-}
-
-/*
- *  Connect to Database
-*/
-	private function dbConnect()
+	public function __construct()
 	{
-		$this->mysqli = new mysqli(self::DB_SERVER, self::DB_USER, self::DB_PASSWORD, self::DB);
+		parent::__construct();        // Init parent constructor
+		$this->dbConnect();          // Initiate Database connection
 	}
 
 	/*
@@ -54,6 +45,14 @@ public function __construct()
 			$this->$func();
 		else
 			$this->response('', 404); // If the method does not exist within this class, use "Page not found".
+	}
+
+	/*
+	 *  Connect to Database
+	 */
+	private function dbConnect()
+	{
+		$this->mysqli = new mysqli(self::DB_SERVER, self::DB_USER, self::DB_PASSWORD, self::DB);
 	}
 
 	private function login()
