@@ -110,14 +110,14 @@ angular.module('myApp.services').factory('Entry', function ($resource) {
 ```
 
 The second argument to `$resource()` is a hash indicating what should be the value of the parameter `:id` in the URL.
-Setting it to `@_id` means whenever we will call methods like `$update()` and `$delete()` on the resource instance, the
-value of `:id` will be set to the `_id` property of the instance. This is useful for PUT and DELETE requests. Also note
+Setting it to `@id` means whenever we will call methods like `$update()` and `$delete()` on the resource instance, the
+value of `:id` will be set to the `id` property of the instance. This is useful for PUT and DELETE requests. Also note
 the third argument. This is a hash that allows us to add any custom methods to the resource class. If the method
 issues a non-GET request it’s made available to the `$resource` instance with a `$` prefix. So, let’s see how to use
 our `$update` method. Assuming we are in a controller:
 
 ```javascript
-$scope.entry = Movie.get({ id: $scope.id }, function () {
+$scope.entry = Item.get({ id: $scope.id }, function () {
   // $scope.entry is fetched from server and is an instance of Entry
   $scope.entry.data = 'something else';
   $scope.entry.$update(function () {
@@ -129,12 +129,12 @@ $scope.entry = Movie.get({ id: $scope.id }, function () {
 When the `$update()` function is called, it does the following:
 
 AngularJS knows that `$update()` function will trigger a PUT request to the URL `/api/entries/:id`.
-It reads the value of `$scope.entry._id`, assigns the value to `:id` and generates the URL.
+It reads the value of `$scope.entry.id`, assigns the value to `:id` and generates the URL.
 Sends a PUT request to the URL with `$scope.entry` as the post body.
 Similarly, if you want to delete an entry it can be done as following:
 
 ```javascript
-$scope.entry = Movie.get({ id: $scope.id }, function () {
+$scope.entry = Item.get({ id: $scope.id }, function () {
   // $scope.entry is fetched from server and is an instance of Entry
   $scope.entry.data = 'something else';
   $scope.entry.$delete(function () {
@@ -222,7 +222,7 @@ with the REST API. The service is defined in `js/services.js`.
 services.js:
 ```javascript
 angular.module('crudApp.services', []).factory('Item', function ($resource) {
-	return $resource('http://crudapp-13434.onmodulus.net/api/items/:id', {id: '@_id'}, {
+	return $resource('http://crudapp-13434.onmodulus.net/api/items/:id', {id: '@id'}, {
 		update: {
 			method: 'PUT'
 		}
@@ -234,7 +234,7 @@ angular.module('crudApp.services', []).factory('Item', function ($resource) {
 });
 ```
 
-The name of our factory is Item. As we are using MySQL/MongoDB, each movie instance has a property called `_id`. The 
+The name of our factory is Item. As we are using MySQL, each item instance has a property called `id`. The 
 rest is simple and straightforward.
 
 Now that we have our service ready let’s build views and controllers.
@@ -322,13 +322,13 @@ angular.module('crudApp').config(function ($stateProvider, $httpProvider) {
 
 So, our application has the following four states:
 
-1. movies
-2. viewMovie
-3. newMovie
-4. editMovie
+1. items
+2. viewItem
+3. newItem
+4. editItem
 
 Each state is composed of a `url`, `templateUrl` and `controller`. Also note that when our main module is loaded we 
-make a transition to state movies showing all the movies in our system. Take a look at the following table to know 
+make a transition to state items showing all the items in our system. Take a look at the following table to know 
 which state corresponds to what URI.
 
 | State    | URI              |
@@ -388,10 +388,10 @@ Here is the content of `_form.html`:
 </div>
 ```
 
-The template uses ng-model to bind various movie details to different properties of scope model movie.
+The template uses ng-model to bind various item details to different properties of scope model item.
 
 item-add.html:
-This template is used to accept user inputs and add a new movie to our system. Here is the content:
+This template is used to accept user inputs and add a new item to our system. Here is the content:
 
 ```html
 <form class="form-horizontal" role="form" ng-submit="addItem()">
@@ -403,7 +403,7 @@ When the form is submitted the function `addItem()` of the scope is called which
 server to create a new item.
 
 item-edit.html:
-This template is used to accept user inputs and update an existing movie in our system.
+This template is used to accept user inputs and update an existing item in our system.
 
 ```html
 <form class="form-horizontal" role="form" ng-submit="updateItem()">
@@ -447,11 +447,11 @@ This template is used to show details about a single item. The content looks lik
 </div>
 ```
 
-In the end there is an edit button. Once clicked it changes the state to editMovie with the movie id in the 
+In the end there is an edit button. Once clicked it changes the state to editItem with the item id in the 
 `$stateParams`.
 
 items.html:
-This template displays all the movies in the system.
+This template displays all the items in the system.
 
 ```html
 <a ui-sref="newItem" class="btn-primary btn-lg nodecoration" title="Add New Item">Add New Item</a>
@@ -472,15 +472,15 @@ This template displays all the movies in the system.
 </table>
 ```
 
-It loops through all the movie objects obtained from the API and displays the details. There is also a button Add New
+It loops through all the item objects obtained from the API and displays the details. There is also a button Add New
  Item which changes the state to `newItem`. As a result a new route loads and we can create a new item entry.
 
-For each movie there are two buttons, View and Delete. View triggers a state transition so that the details for the 
-movie are displayed. Delete button deletes the item permanently.
+For each item there are two buttons, View and Delete. View triggers a state transition so that the details for the 
+item are displayed. Delete button deletes the item permanently.
 
 ### Creating Controllers
 Each state has a controller. So, in total we have four controllers for four states. All the controllers go into 
-`js/controllers.js`. The controllers just utilize our custom service Movie and work the way we have discussed above. 
+`js/controllers.js`. The controllers just utilize our custom service Item and work the way we have discussed above. 
 So, here is how our controllers look.
 
 controllers.js:

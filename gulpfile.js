@@ -38,7 +38,6 @@ gulp.task('archive:zip', function (done) {
 	output.on('close', done);
 
 	files.forEach(function (file) {
-
 		var filePath = path.resolve(dirs.dist, file);
 
 		// `archiver.bulk` does not maintain the file
@@ -47,12 +46,10 @@ gulp.task('archive:zip', function (done) {
 			'name': file,
 			'mode': fs.statSync(filePath)
 		});
-
 	});
 
 	archiver.pipe(output);
 	archiver.finalize();
-
 });
 
 gulp.task('clean', function (done) {
@@ -65,6 +62,7 @@ gulp.task('clean', function (done) {
 
 gulp.task('copy', [
 	'copy:.htaccess',
+	'copy:sql',
 	'copy:index.html',
 	'copy:license',
 	'copy:misc',
@@ -77,6 +75,12 @@ gulp.task('copy:.htaccess', function () {
 	return gulp.src('node_modules/apache-server-configs/dist/.htaccess')
 			.pipe(plugins.replace(/# ErrorDocument/g, 'ErrorDocument'))
 			.pipe(gulp.dest(dirs.dist));
+});
+
+gulp.task('copy:.sql', function () {
+	'use strict';
+	return gulp.src('*.sql')
+		.pipe(gulp.dest(dirs.dist));
 });
 
 gulp.task('copy:index.html', function () {
