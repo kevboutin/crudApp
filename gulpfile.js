@@ -77,7 +77,7 @@ gulp.task('copy:.htaccess', function () {
 			.pipe(gulp.dest(dirs.dist));
 });
 
-gulp.task('copy:.sql', function () {
+gulp.task('copy:sql', function () {
 	'use strict';
 	return gulp.src('*.sql')
 		.pipe(gulp.dest(dirs.dist));
