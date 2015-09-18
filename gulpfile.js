@@ -38,14 +38,16 @@ gulp.task('archive:zip', function (done) {
 	output.on('close', done);
 
 	files.forEach(function (file) {
-		var filePath = path.resolve(dirs.dist, file);
+		if (file.indexOf('.DS_Store') < 0) {
+			var filePath = path.resolve(dirs.dist, file);
 
-		// `archiver.bulk` does not maintain the file
-		// permissions, so we need to add files individually
-		archiver.append(fs.createReadStream(filePath), {
-			'name': file,
-			'mode': fs.statSync(filePath)
-		});
+			// `archiver.bulk` does not maintain the file
+			// permissions, so we need to add files individually
+			archiver.append(fs.createReadStream(filePath), {
+				'name': file,
+				'mode': fs.statSync(filePath)
+			});
+		}
 	});
 
 	archiver.pipe(output);
@@ -106,6 +108,7 @@ gulp.task('copy:misc', function () {
 		// Exclude the following files
 		// (other tasks will handle the copying of these files)
 		// '!' + dirs.src + '/css/main.css',
+		'!' + dirs.src + '/**/.DS_Store',
 		'!' + dirs.src + '/index.html'
 
 	], {
