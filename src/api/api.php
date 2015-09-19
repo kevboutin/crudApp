@@ -1,6 +1,10 @@
 <?php
 require_once("rest.inc.php");
 
+// Include and configure log4php
+include("../lib/log4php/Logger.php");
+Logger::configure("log4php-config.xml");
+
 /**
  * Created by Kevin Boutin on 08/23/15.
  *
@@ -23,16 +27,19 @@ class API extends REST
 
 	const DB_SERVER = "127.0.0.1";
 	const DB_USER = "weprovid_shop";
-	const DB_PASSWORD = "4dminp455";
+	const DB_PASSWORD = "";
 	const DB = "weprovid_shop";
 
 	private $db = NULL;
 	private $mysqli = NULL;
+	private $log;
 
 	public function __construct()
 	{
 		parent::__construct();        // Init parent constructor
-		$this->dbConnect();          // Initiate Database connection
+		$this->log = Logger::getLogger(__CLASS__);
+		$this->dbConnect();           // Initiate Database connection
+		$this->log->info("Connected to database .");
 	}
 
 	/*
@@ -41,10 +48,13 @@ class API extends REST
 	public function processApi()
 	{
 		$func = strtolower(trim(str_replace("/", "", $_REQUEST['x'])));
-		if (method_exists($this, $func))
+		if (method_exists($this, $func)) {
+			$this->log->info("Method " + $func + " is being called.");
 			$this->$func();
-		else
+		} else {
 			$this->response('', 404); // If the method does not exist within this class, use "Page not found".
+			$this->log->warn("Method does not exist. " + $func);
+		}
 	}
 
 	/*
@@ -58,6 +68,7 @@ class API extends REST
 	private function login()
 	{
 		if ($this->get_request_method() != "POST") {
+			$this->log->error("Returning 406 - not using POST.");
 			$this->response('', 406);
 		}
 		$email = $this->_request['email'];
@@ -65,28 +76,34 @@ class API extends REST
 		if (!empty($email) and !empty($password)) {
 			if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
 				$query = "SELECT id, email, role FROM users WHERE email = '$email' AND password = '" . hash("sha512", $password) . "' LIMIT 1";
+				$this->log->info($query);
 				$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 
 				if ($r->num_rows > 0) {
 					$result = $r->fetch_assoc();
+					$this->log->debug("Response " + $this->json($result));
 					// If success, everything is good send header as "OK" and user details
 					$this->response($this->json($result), 200);
 				}
+				$this->log->info("Returning 204 - no content.");
 				$this->response('', 204);  // If no records "No Content" status
 			}
 		}
 
 		$error = array('status' => "Failed", "msg" => "Invalid Email address or Password");
+		$this->log->info("Email address or password was not valid.");
 		$this->response($this->json($error), 400);
 	}
 
 	private function items()
 	{
 		if ($this->get_request_method() != "GET") {
+			$this->log->info("Returning 406 - not using GET.");
 			$this->response('', 406);
 		}
 		$query = "SELECT DISTINCT i.id, i.title, i.description, i.price, i.type, i.gender, i.vendor, i.site, i.tags,
 i.modified FROM items i ORDER BY i.title";
+		$this->log->debug($query);
 		$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 
 		if ($r->num_rows > 0) {
@@ -94,31 +111,38 @@ i.modified FROM items i ORDER BY i.title";
 			while ($row = $r->fetch_assoc()) {
 				$result[] = $row;
 			}
+			$this->log->info("Returning 200 - successfully selected " + $r->num_rows + " item(s).");
 			$this->response($this->json($result), 200); // send user details
 		}
+		$this->log->info("Returning 204 - no content.");
 		$this->response('', 204);  // If no records "No Content" status
 	}
 
 	private function item()
 	{
 		if ($this->get_request_method() != "GET") {
+			$this->log->error("Returning 406 - not using GET.");
 			$this->response('', 406);
 		}
 		$id = (int)$this->_request['id'];
 		if ($id > 0) {
 			$query = "SELECT DISTINCT i.id, i.title, i.description, i.price, i.type, i.gender, i.vendor, i.site, i.tags, i.modified FROM items i WHERE i.id=$id";
+			$this->log->debug($query);
 			$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 			if ($r->num_rows > 0) {
 				$result = $r->fetch_assoc();
+				$this->log->info("Returning 200 - successfully selected one item.");
 				$this->response($this->json($result), 200); // send user details
 			}
 		}
+		$this->log->info("Returning 204 - no content.");
 		$this->response('', 204);  // If no records, use "No Content" status
 	}
 
 	private function insertItem()
 	{
 		if ($this->get_request_method() != "POST") {
+			$this->log->error("Returning 406 - not using POST.");
 			$this->response('', 406);
 		}
 
@@ -141,17 +165,22 @@ i.modified FROM items i ORDER BY i.title";
 		}
 
 		$query = "INSERT INTO items(" . trim($columns, ',') . ") VALUES(" . trim($values, ',') . ")";
+		$this->log->debug($query);
 		if (!empty($item)) {
 			$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 			$success = array('status' => "Success", "msg" => "Item created successfully.", "data" => $item);
+			$this->log->info("Returning 201 - successfully created one item.");
 			$this->response($this->json($success), 201);
-		} else
+		} else {
+			$this->log->info("Returning 204 - no content.");
 			$this->response('', 204);  //"No Content" status
+		}
 	}
 
 	private function updateItem()
 	{
 		if ($this->get_request_method() != "POST") {
+			$this->log->error("Returning 406 - not using POST.");
 			$this->response('', 406);
 		}
 
@@ -175,27 +204,36 @@ i.modified FROM items i ORDER BY i.title";
 		}
 
 		$query = "UPDATE items SET " . trim($columns, ',') . " WHERE id=$id";
+		$this->log->debug($query);
 		if (!empty($item)) {
 			$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 			$success = array('status' => "Success", "msg" => "Item " . $id . " updated successfully.", "data" => $item);
+			$this->log->info("Returning 200 - successfully updated one item.");
 			$this->response($this->json($success), 200);
-		} else
+		} else {
+			$this->log->info("Returning 204 - no content.");
 			$this->response('', 204);  // "No Content" status
+		}
 	}
 
 	private function deleteItem()
 	{
 		if ($this->get_request_method() != "DELETE") {
+			$this->log->error("Returning 406 - not using DELETE.");
 			$this->response('', 406);
 		}
 		$id = (int)$this->_request['id'];
 		if ($id > 0) {
 			$query = "DELETE FROM items WHERE id = $id";
+			$this->log->debug($query);
 			$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 			$success = array('status' => "Success", "msg" => "Successfully deleted one item.");
+			$this->log->info("Returning 200 - successfully deleted one item.");
 			$this->response($this->json($success), 200);
-		} else
+		} else {
+			$this->log->info("Returning 204 - no content.");
 			$this->response('', 204);  // If no records, use "No Content" status
+		}
 	}
 
 	/*
