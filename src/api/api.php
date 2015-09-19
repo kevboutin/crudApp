@@ -22,9 +22,9 @@ class API extends REST
 	public $data = "";
 
 	const DB_SERVER = "127.0.0.1";
-	const DB_USER = "itemadmin";
-	const DB_PASSWORD = "";
-	const DB = "prefix_shop";
+	const DB_USER = "weprovid_shop";
+	const DB_PASSWORD = "4dminp455";
+	const DB = "weprovid_shop";
 
 	private $db = NULL;
 	private $mysqli = NULL;
