@@ -22,6 +22,7 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 	$scope.item = new Item();
 
 	$scope.addItem = function () {
+		console.log($scope.item);
 		$scope.item.$save(function () {
 			$state.go('items');
 		});

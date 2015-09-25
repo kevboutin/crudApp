@@ -7,6 +7,8 @@ var plugins = require('gulp-load-plugins')(); // Load all gulp plugins automatic
 
 var runSequence = require('run-sequence');    // Temporary solution until gulp 4 (https://github.com/gulpjs/gulp/issues/355)
 
+var phplint = require('phplint').lint;
+
 var pkg = require('./package.json');
 var dirs = pkg.configs.directories;
 
@@ -142,6 +144,22 @@ gulp.task('lint:js', function () {
 			.pipe(plugins.jshint.reporter('jshint-stylish'));
 });
 
+gulp.task('lint:php', function (cb) {
+	'use strict';
+	return phplint([
+		'*.php',
+		dirs.src + '/**/*.php',
+		dirs.src + '!lib/**/*'],
+		{ limit: 10 },
+		function (err, stdout, stderr) {
+			if (err) {
+				cb(err);
+			} else {
+				cb();
+			}
+		});
+});
+
 
 // ---------------------------------------------------------------------
 // | Main tasks                                                        |
@@ -159,7 +177,7 @@ gulp.task('archive', function (done) {
 gulp.task('build', function (done) {
 	'use strict';
 	runSequence(
-		['clean', 'lint:js'],
+		['clean', 'lint:js', 'lint:php'],
 		'copy',
 		done);
 });

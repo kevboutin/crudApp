@@ -39,7 +39,7 @@ class API extends REST
 		parent::__construct();        // Init parent constructor
 		$this->log = Logger::getLogger(__CLASS__);
 		$this->dbConnect();           // Initiate Database connection
-		$this->log->info("Connected to database .");
+		$this->log->info("Connected to database " . self::DB . ".");
 	}
 
 	/*
@@ -47,13 +47,60 @@ class API extends REST
 	 */
 	public function processApi()
 	{
-		$func = strtolower(trim(str_replace("/", "", $_REQUEST['x'])));
-		if (method_exists($this, $func)) {
-			$this->log->info("Method " + $func + " is being called.");
-			$this->$func();
+		$id = "";
+		$content_type = "application/x-www-form-urlencoded";
+		foreach ($_REQUEST as $key => $value)
+		{
+			$value = addslashes($value);
+			$value = strip_tags($value);
+			$this->log->info($key . " - " . $value);
+		}
+
+		if(isset($_SERVER['CONTENT_TYPE'])) {
+			$content_type = $_SERVER['CONTENT_TYPE'];
+			$this->log->info($content_type);
+		}
+
+		if($content_type == "application/json") {
+			$body = file_get_contents("php://input");
+			$body_params = json_decode($body);
+			if($body_params) {
+				foreach($body_params as $param_name => $param_value) {
+					$parameters[$param_name] = $param_value;
+					if($param_name == "id") {
+						$id = $param_value;
+					}
+				}
+			}
 		} else {
+			$url_elements = explode("/", $_REQUEST['x']);
+			if(isset($url_elements[1])) {
+				$id = (int) trim($url_elements[1]);
+			}
+		}
+
+		$this->log->info("Request method: " . $_SERVER['REQUEST_METHOD']);
+		$req_method = $_SERVER['REQUEST_METHOD'];
+		if($req_method == "GET") {
+			if($_GET['id']) {
+				$this->log->info("GET called with id: " . $_GET['id']);
+				$this->item((int) $_GET['id']);
+			} else if($id != "") {
+				$this->log->info("GET called with id: " . $id);
+				$this->item($id);
+			} else {
+				$this->log->info("GET called with no id.");
+				$this->items();
+			}
+		} else if($req_method == "POST") {
+			$this->insertItem();
+		} else if($req_method == "DELETE") {
+			$this->deleteItem();
+		} else if($req_method == "PUT") {
+			$this->updateItem();
+		} else {
+			$this->log->warn("Request method is not supported: " . $req_method);
 			$this->response('', 404); // If the method does not exist within this class, use "Page not found".
-			$this->log->warn("Method does not exist. " + $func);
 		}
 	}
 
@@ -81,7 +128,7 @@ class API extends REST
 
 				if ($r->num_rows > 0) {
 					$result = $r->fetch_assoc();
-					$this->log->debug("Response " + $this->json($result));
+					$this->log->debug("Response " . $this->json($result));
 					// If success, everything is good send header as "OK" and user details
 					$this->response($this->json($result), 200);
 				}
@@ -111,20 +158,20 @@ i.modified FROM items i ORDER BY i.title";
 			while ($row = $r->fetch_assoc()) {
 				$result[] = $row;
 			}
-			$this->log->info("Returning 200 - successfully selected " + $r->num_rows + " item(s).");
+			$this->log->info("Returning 200 - successfully selected " . $r->num_rows . " item(s).");
 			$this->response($this->json($result), 200); // send user details
 		}
 		$this->log->info("Returning 204 - no content.");
 		$this->response('', 204);  // If no records "No Content" status
 	}
 
-	private function item()
+	private function item($id)
 	{
 		if ($this->get_request_method() != "GET") {
 			$this->log->error("Returning 406 - not using GET.");
 			$this->response('', 406);
 		}
-		$id = (int)$this->_request['id'];
+		//$id = (int)$this->_request['id'];
 		if ($id > 0) {
 			$query = "SELECT DISTINCT i.id, i.title, i.description, i.price, i.type, i.gender, i.vendor, i.site, i.tags, i.modified FROM items i WHERE i.id=$id";
 			$this->log->debug($query);
@@ -137,6 +184,11 @@ i.modified FROM items i ORDER BY i.title";
 		}
 		$this->log->info("Returning 204 - no content.");
 		$this->response('', 204);  // If no records, use "No Content" status
+	}
+
+	private function insert()
+	{
+		$this->insertItem();
 	}
 
 	private function insertItem()
@@ -177,6 +229,11 @@ i.modified FROM items i ORDER BY i.title";
 		}
 	}
 
+	private function update()
+	{
+		$this->updateItem();
+	}
+
 	private function updateItem()
 	{
 		if ($this->get_request_method() != "POST") {
@@ -214,6 +271,11 @@ i.modified FROM items i ORDER BY i.title";
 			$this->log->info("Returning 204 - no content.");
 			$this->response('', 204);  // "No Content" status
 		}
+	}
+
+	private function delete()
+	{
+		$this->deleteItem();
 	}
 
 	private function deleteItem()

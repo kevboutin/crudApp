@@ -169,11 +169,12 @@ you can go through the documentation.
 ## Building a Generic Item App
 To reinforce the concepts of `$resource` let’s build an app for typical shop keepers. This is going to be a CRUD where 
 users can add a new item to our database, update an existing item, and finally delete one. We will use `$resource` to 
-interact with the REST API. You can check out a live demo of what we are going to build [here](http://weprovideit
-.com/crudApp/).
+interact with the REST API. You can check out a live demo of what we are going to build [here](http://crudapp
+.weprovideit
+.com/).
 
 Just note that the API I have built is CORS enabled, so it is possible for you to create an Angular app separately 
-and use the URL [http://crudapp-weprovideit.com/](http://crudapp-weprovideit.com/) as the API
+and use the URL [http://crudapp.weprovideit.com/](http://crudapp.weprovideit.com/) as the API
 . You can develop the Angular app and play around with it without worrying about the backend.
 
 ## Our API
@@ -222,7 +223,7 @@ with the REST API. The service is defined in `js/services.js`.
 services.js:
 ```javascript
 angular.module('crudApp.services', []).factory('Item', function ($resource) {
-	return $resource('http://crudapp-13434.onmodulus.net/api/items/:id', {id: '@id'}, {
+	return $resource('http://crudapp.weprovideit.com/api/items/:id', {id: '@id'}, {
 		update: {
 			method: 'PUT'
 		}
