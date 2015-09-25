@@ -186,11 +186,6 @@ i.modified FROM items i ORDER BY i.title";
 		$this->response('', 204);  // If no records, use "No Content" status
 	}
 
-	private function insert()
-	{
-		$this->insertItem();
-	}
-
 	private function insertItem()
 	{
 		if ($this->get_request_method() != "POST") {
@@ -227,11 +222,6 @@ i.modified FROM items i ORDER BY i.title";
 			$this->log->info("Returning 204 - no content.");
 			$this->response('', 204);  //"No Content" status
 		}
-	}
-
-	private function update()
-	{
-		$this->updateItem();
 	}
 
 	private function updateItem()
@@ -271,11 +261,6 @@ i.modified FROM items i ORDER BY i.title";
 			$this->log->info("Returning 204 - no content.");
 			$this->response('', 204);  // "No Content" status
 		}
-	}
-
-	private function delete()
-	{
-		$this->deleteItem();
 	}
 
 	private function deleteItem()

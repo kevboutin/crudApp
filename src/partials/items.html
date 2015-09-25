@@ -6,11 +6,13 @@
 			<td></td>
 		</tr>
 		<tr ng-repeat="item in items">
-			<td>{{item.title}}</td>
 			<td>
-				<a class="btn btn-primary" ui-sref="viewItem({ id:item.id })" title="View">View</a>
-				<a class="btn btn-danger" ng-click="deleteItem(item)" title="Delete">Delete</a>
+				<a class="btn btn-default" ui-sref="viewItem({ id:item.id })" title="View"
+					 aria-label="View">View</a>
+				<a class="btn btn-danger" ng-click="deleteItem(item)" title="Delete"
+					 aria-label="Delete">Delete</a>
 			</td>
+			<td>{{item.title}}</td>
 		</tr>
 	</tbody>
 </table>

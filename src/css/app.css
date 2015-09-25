@@ -7,18 +7,27 @@ a {
 	color: #00b7ff;
 }
 
-.top-buffer{
-    margin-top: 10px;
+.top-buffer {
+	margin-top: 10px;
 }
 
-.itemtable tr td:nth-child(2) {
-    width: 150px;
+.itemtable tr td:nth-child(1) {
+	text-align: right;
+	font-weight: bold;
+}
+
+.itemtable tr td h3 {
+	text-align: left;
 }
 
 .itemtable tr:nth-child(1) td {
-    border-top: none;
+	border-top: none;
 }
 
-a.nodecoration{
-    text-decoration: none;
+.btn {
+	margin-left: 6px;
+}
+
+a.nodecoration {
+	text-decoration: none;
 }
