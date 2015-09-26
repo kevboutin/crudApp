@@ -88,7 +88,8 @@ class API extends REST
 			}
 		} else if($req_method == "DELETE") {
 			if(empty($id)) {
-				$this->log->error("$id is empty for some reason when trying to delete.");
+				$this->log->error("Id is empty for some reason when trying to delete. This may have happened because
+				the row was already deleted and empty on the page but they clicked the Delete button anyway.");
 			} else {
 				$this->deleteItem((int)$id);
 			}
@@ -142,7 +143,7 @@ class API extends REST
 			$this->log->info("Returning 406 - not using GET.");
 			$this->response('', 406);
 		}
-		$query = "SELECT DISTINCT i.id, i.title, i.description, i.price, i.type, i.gender, i.vendor, i.site, i.tags,
+		$query = "SELECT DISTINCT i.id, i.title, i.description, i.price, i.type, i.size, i.gender, i.vendor, i.site, i.tags,
 i.modified FROM items i ORDER BY i.title";
 		$this->log->debug($query);
 		$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
@@ -167,7 +168,8 @@ i.modified FROM items i ORDER BY i.title";
 		}
 
 		if ($id > 0) {
-			$query = "SELECT DISTINCT i.id, i.title, i.description, i.price, i.type, i.gender, i.vendor, i.site, i.tags, i.modified FROM items i WHERE i.id=$id";
+			$query = "SELECT DISTINCT i.id, i.title, i.description, i.price, i.type, i.size, i.gender, i.vendor, i.site, i.tags,
+i.modified FROM items i WHERE i.id=$id";
 			$this->log->debug($query);
 			$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 			if ($r->num_rows > 0) {
@@ -234,7 +236,6 @@ i.modified FROM items i ORDER BY i.title";
 
 		// Check the item received. If key does not exist, insert blank into the array.
 		foreach ($column_names as $desired_key) {
-			$this->log->debug($desired_key);
 			if (!in_array($desired_key, $keys)) {
 				$$desired_key = '';
 			} else {
