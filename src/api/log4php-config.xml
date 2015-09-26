@@ -2,11 +2,12 @@
 
 	<appender name="myConsoleAppender" class="LoggerAppenderConsole" />
 
-	<appender name="myFileAppender" class="LoggerAppenderFile">
+	<appender name="myFileAppender" class="LoggerAppenderDailyFile">
 		<layout class="LoggerLayoutPattern">
 			<param name="conversionPattern" value="%date - %15server{REMOTE_ADDR}:%5server{REMOTE_PORT} - %-5level - %pid [%logger] %line: %message%newline" />
 		</layout>
-		<param name="file" value="crud-api.log" />
+		<param name="file" value="crud-api-%s.log" />
+		<param name="datePattern" value="Y-m-d" />
 	</appender>
 
 	<logger name="API">
