@@ -12,7 +12,7 @@
 
 	<div class="col-sm-10">
 		<textarea type="text" ng-model="item.description" class="form-control"
-							id="description" maxlength="512" aria-labelledby="description-label"
+							id="description" maxlength="2512" aria-labelledby="description-label"
 							rows="4">More information about the item.</textarea>
 	</div>
 </div>
@@ -79,7 +79,7 @@
 
 	<div class="col-sm-10">
 		<input type="text" ng-model="item.tags" class="form-control" id="tags"
-					 placeholder="Separate tags with commas" aria-labelledby="tags-label"/>
+					 placeholder="Separate tags with commas" maxlength="255" aria-labelledby="tags-label"/>
 	</div>
 </div>
 

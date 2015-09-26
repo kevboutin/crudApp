@@ -29,6 +29,10 @@ a {
 	border-top: none;
 }
 
+.itemtable tr:last-child td {
+	border-bottom: 1px solid #ddd;
+}
+
 .btn {
 	margin-left: 6px;
 }

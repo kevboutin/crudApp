@@ -49,6 +49,7 @@ class API extends REST
 	{
 		$id = "";
 		$content_type = "application/x-www-form-urlencoded";
+		$body_params = "";
 		foreach ($_REQUEST as $key => $value)
 		{
 			$value = addslashes($value);
@@ -61,22 +62,9 @@ class API extends REST
 			$this->log->info($content_type);
 		}
 
-		if($content_type == "application/json") {
-			$body = file_get_contents("php://input");
-			$body_params = json_decode($body);
-			if($body_params) {
-				foreach($body_params as $param_name => $param_value) {
-					$parameters[$param_name] = $param_value;
-					if($param_name == "id") {
-						$id = $param_value;
-					}
-				}
-			}
-		} else {
-			$url_elements = explode("/", $_REQUEST['x']);
-			if(isset($url_elements[1])) {
-				$id = (int) trim($url_elements[1]);
-			}
+		$url_elements = explode("/", $_REQUEST['x']);
+		if(isset($url_elements[1])) {
+			$id = (int) trim($url_elements[1]);
 		}
 
 		$this->log->info("Request method: " . $_SERVER['REQUEST_METHOD']);
@@ -93,11 +81,17 @@ class API extends REST
 				$this->items();
 			}
 		} else if($req_method == "POST") {
-			$this->insertItem();
+			if(empty($id)) {
+				$this->insertItem();
+			} else {
+				$this->updateItem($id);
+			}
 		} else if($req_method == "DELETE") {
-			$this->deleteItem();
-		} else if($req_method == "PUT") {
-			$this->updateItem();
+			if(empty($id)) {
+				$this->log->error("$id is empty for some reason when trying to delete.");
+			} else {
+				$this->deleteItem((int)$id);
+			}
 		} else {
 			$this->log->warn("Request method is not supported: " . $req_method);
 			$this->response('', 404); // If the method does not exist within this class, use "Page not found".
@@ -171,7 +165,7 @@ i.modified FROM items i ORDER BY i.title";
 			$this->log->error("Returning 406 - not using GET.");
 			$this->response('', 406);
 		}
-		//$id = (int)$this->_request['id'];
+
 		if ($id > 0) {
 			$query = "SELECT DISTINCT i.id, i.title, i.description, i.price, i.type, i.gender, i.vendor, i.site, i.tags, i.modified FROM items i WHERE i.id=$id";
 			$this->log->debug($query);
@@ -199,7 +193,7 @@ i.modified FROM items i ORDER BY i.title";
 		$columns = '';
 		$values = '';
 
-		// Check the item received. If key does not exist,insert blank into the array.
+		// Check the item received. If key does not exist, insert blank into the array.
 		foreach ($column_names as $desired_key) {
 			if (!in_array($desired_key, $keys)) {
 				$$desired_key = '';
@@ -224,7 +218,7 @@ i.modified FROM items i ORDER BY i.title";
 		}
 	}
 
-	private function updateItem()
+	private function updateItem($id)
 	{
 		if ($this->get_request_method() != "POST") {
 			$this->log->error("Returning 406 - not using POST.");
@@ -232,19 +226,19 @@ i.modified FROM items i ORDER BY i.title";
 		}
 
 		$item = json_decode(file_get_contents("php://input"), true);
-		$id = (int)$item['id'];
 		$column_names = array('id', 'title', 'description', 'price', 'type', 'size', 'vendor', 'site', 'gender',
 			'tags');
-		$keys = array_keys($item['item']);
+		$keys = array_keys($item);
 		$columns = '';
 		$values = '';
 
-		// Check the item received. If key does not exist,insert blank into the array.
+		// Check the item received. If key does not exist, insert blank into the array.
 		foreach ($column_names as $desired_key) {
+			$this->log->debug($desired_key);
 			if (!in_array($desired_key, $keys)) {
 				$$desired_key = '';
 			} else {
-				$$desired_key = $item['item'][$desired_key];
+				$$desired_key = $item[$desired_key];
 			}
 
 			$columns = $columns . $desired_key . "='" . $$desired_key . "',";
@@ -263,13 +257,13 @@ i.modified FROM items i ORDER BY i.title";
 		}
 	}
 
-	private function deleteItem()
+	private function deleteItem($id)
 	{
 		if ($this->get_request_method() != "DELETE") {
 			$this->log->error("Returning 406 - not using DELETE.");
 			$this->response('', 406);
 		}
-		$id = (int)$this->_request['id'];
+
 		if ($id > 0) {
 			$query = "DELETE FROM items WHERE id = $id";
 			$this->log->debug($query);
@@ -291,6 +285,12 @@ i.modified FROM items i ORDER BY i.title";
 		if (is_array($data)) {
 			return json_encode($data);
 		}
+	}
+
+	private function startsWith($haystack, $needle)
+	{
+		$length = strlen($needle);
+		return (substr($haystack, 0, $length) === $needle);
 	}
 }
 
