@@ -2,11 +2,10 @@
 <table class="table itemtable">
 	<tbody>
 		<tr>
-			<td><h3>All Items</h3></td>
-			<td></td>
+			<td colspan="2"><h3>All Items</h3></td>
 		</tr>
 		<tr ng-repeat="item in items">
-			<td>
+			<td nowrap>
 				<a class="btn btn-default" ui-sref="viewItem({ id:item.id })" title="View"
 					 aria-label="View">View</a>
 				<a class="btn btn-danger" ng-click="deleteItem(item)" title="Delete"
