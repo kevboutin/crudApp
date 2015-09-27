@@ -20,6 +20,7 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 
 	// Get a single item. Issues a GET to /api/items/:id
 	$scope.item = Item.get({ id: $stateParams.id });
+	console.log($scope.item);
 
 }).controller('ItemCreateController', function ($scope, $state, $stateParams, Item) {
 	$scope.submitted = false;
@@ -62,4 +63,5 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 	};
 
 	$scope.loadItem();
+	console.log($scope.item);
 });
