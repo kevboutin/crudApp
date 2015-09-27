@@ -7,11 +7,11 @@ format:
 
 | URL                                   | HTTP Verb | POST Body   | Result                 |
 | ------------------------------------- | --------- | ----------- | ---------------------- |
-| http://yourdomain.com/api/entries     | GET       | empty       | Returns all entries    |
-| http://yourdomain.com/api/entries     | POST      | JSON string | New entry created      |
-| http://yourdomain.com/api/entries/:id | GET       | empty       | Returns single entry   |
-| http://yourdomain.com/api/entries/:id | PUT       | JSON string | Updates existing entry |
-| http://yourdomain.com/api/entries/:id | DELETE    | empty       | Deletes existing entry |
+| http://yourdomain.com/api/items       | GET       | empty       | Returns all items      |
+| http://yourdomain.com/api/items       | POST      | JSON string | New entry created      |
+| http://yourdomain.com/api/items/:id   | GET       | empty       | Returns single item    |
+| http://yourdomain.com/api/items/:id   | POST      | JSON string | Updates existing item  |
+| http://yourdomain.com/api/items/:id   | DELETE    | empty       | Deletes existing item  |
 
 You can create the endpoints using the server side language of your choice. Using Node + Express + MongoDB to design
 the RESTful API is popular but also PHP + MySQL is popular even if older. Once you have the URLs ready, 
@@ -24,8 +24,8 @@ calling the `$resource()` function with your REST endpoint, as shown in the foll
 returns a `$resource` class representation which can be used to interact with the REST backend.
 
 ```javascript
-angular.module('myApp.services').factory('Entry', function ($resource) {
-  return $resource('/api/entries/:id'); // Note the full endpoint address
+angular.module('myApp.services').factory('Item', function ($resource) {
+  return $resource('/api/items/:id'); // Note the full endpoint address
 });
 ```
 
@@ -42,44 +42,44 @@ Now, let’s see how we can use the `get()`, `query()` and `save()` methods in a
 ```javascript
 angular.module('myApp.controllers', []);
 
-angular.module('myApp.controllers').controller('ResourceController', function ($scope, Entry) {
-  var entry = Entry.get({ id: $scope.id }, function () {
-    console.log(entry);
+angular.module('myApp.controllers').controller('ResourceController', function ($scope, Item) {
+  var entry = Item.get({ id: $scope.id }, function () {
+    console.log(item);
   }); // get() returns a single entry
 
-  var entries = Entry.query(function () {
-    console.log(entries);
+  var items = Item.query(function () {
+    console.log(items);
   }); //query() returns all the entries
 
-  $scope.entry = new Entry(); //You can instantiate resource class
+  $scope.item = new Item(); //You can instantiate resource class
 
-  $scope.entry.data = 'some data';
+  $scope.item.data = 'some data';
 
-  Entry.save($scope.entry, function () {
+  Item.save($scope.item, function () {
     //data saved. do something here.
-  }); //saves an entry. Assuming $scope.entry is the Entry object
+  }); //saves an item. Assuming $scope.item is the Item object
 });
 ```
 
-The `get()` function in the above snippet issues a GET request to `/api/entries/:id`. The parameter `:id` in the URL is
+The `get()` function in the above snippet issues a GET request to `/api/items/:id`. The parameter `:id` in the URL is
 replaced with `$scope.id`. You should also note that the function `get()` returns an empty object which is populated
 automatically when the actual data comes from server. The second argument to `get()` is a callback which is executed
 when the data arrives from server. This is a useful trick because you can set the empty object returned by `get()` to
 the `$scope` and refer to it in the view. When the actual data arrives and the object is populated, the data binding
 kicks in and your view is also updated.
 
-The function `query()` issues a GET request to `/api/entries` (notice there is no `:id`) and returns an empty array.
+The function `query()` issues a GET request to `/api/items` (notice there is no `:id`) and returns an empty array.
 This array is populated when the data arrives from server. Again you can set this array as a `$scope` model and refer
 to it in the view using `ng-repeat`. You can also pass a callback to `query()` which is called once the data comes from
 server.
 
-The `save()` function issues a POST request to `/api/entries` with the first argument as the post body. The second
+The `save()` function issues a POST request to `/api/items` with the first argument as the post body. The second
 argument is a callback which is called when the data is saved. You might recall that the return value of the
-`$resource()` function is a resource class. So, in our case we can call new Entry() to instantiate an actual object
+`$resource()` function is a resource class. So, in our case we can call `new Item()` to instantiate an actual object
 out of this class, set various properties on it and finally save the object to backend.
 
 Ideally, you will only use `get()` and `query()` on the resource class (Entry in our case). All the non GET methods like
- `save()` and `delete()` are also available in the instance obtained by calling `new Entry()` (call this a `$resource`
+ `save()` and `delete()` are also available in the instance obtained by calling `new Item()` (call this a `$resource`
  instance). But the difference is that these methods are prefixed with a `$`. So, the methods available in the
  `$resource` instance (as opposed to `$resource` class) are:
 
@@ -90,9 +90,9 @@ Ideally, you will only use `get()` and `query()` on the resource class (Entry in
 For instance, the method `$save()` is used as following:
 
 ```javascript
-$scope.entry = new Entry(); //this object now has a $save() method
-$scope.entry.$save(function () {
-  //data saved. $scope.entry is sent as the post body.
+$scope.item = new Item(); //this object now has a $save() method
+$scope.item.$save(function () {
+  //data saved. $scope.item is sent as the post body.
 });
 ```
 
@@ -100,10 +100,10 @@ We have explored the create, read and delete parts of CRUD. The only thing left 
 operation we need to modify our custom factory Entity as shown below.
 
 ```javascript
-angular.module('myApp.services').factory('Entry', function ($resource) {
-  return $resource('/api/entries/:id', { id: '@id' }, {
+angular.module('myApp.services').factory('Item', function ($resource) {
+  return $resource('/api/items/:id', { id: '@id' }, {
     update: {
-      method: 'PUT' // this method issues a PUT request
+      method: 'POST' // this method issues a PUT request
     }
   });
 });
@@ -154,7 +154,7 @@ you pass to `$resource()`. If you want to turn this off you can do so like this:
 angular.module('myApp.services').factory('Entry', function ($resource) {
   return $resource('/api/entries/:id', { id: '@id' }, {
     update: {
-      method: 'PUT' // this method issues a PUT request
+      method: 'POST' // this method issues a PUT request
     }
   }, {
     stripTrailingSlashes: false
@@ -185,7 +185,7 @@ I have created a RESTful backend using PHP and MySQL. Take a look at the followi
 | api/items     | GET       | empty       | Returns all items     |
 | api/items     | POST      | JSON string | New item created      |
 | api/items/:id | GET       | empty       | Returns single item   |
-| api/items/:id | PUT       | JSON string | Updates existing item |
+| api/items/:id | POST      | JSON string | Updates existing item |
 | api/items/:id | DELETE    | empty       | Deletes existing item |
 
 
@@ -351,40 +351,197 @@ Here is the content of `_form.html`:
 
 ```html
 <div class="form-group">
-	<label for="title" class="col-sm-2 control-label">Title</label>
+	<label for="title" id="title-label" class="col-sm-2 control-label">Title</label>
 
 	<div class="col-sm-10">
-		<input type="text" ng-model="item.title" class="form-control" id="title" placeholder="Title Here"/>
-	</div>
-</div>
-<div class="form-group">
-	<label for="price" class="col-sm-2 control-label">Price</label>
-
-	<div class="col-sm-10">
-		<input type="text" ng-model="item.price" class="form-control" id="price" plac
-					 eholder="What is the cost?"/>
-	</div>
-</div>
-<div class="form-group">
-	<label for="description" class="col-sm-2 control-label">Description</label>
-
-	<div class="col-sm-10">
-		<input type="text" ng-model="item.description" class="form-control" id="description" plac
-					 eholder="More information about the item."/>
-	</div>
-</div>
-
-<div class="form-group">
-	<label for="tags" class="col-sm-2 control-label">Item Tags</label>
-
-	<div class="col-sm-10">
-		<input type="text" ng-model="item.tags" class="form-control" id="tags" placeholder="Item tags here"/>
+		<input type="text" ng-model="item.title" class="form-control" id="title"
+					 placeholder="Title Here" maxlength="50" name="title"
+					 ng-minlength="3" ng-maxlength="50" aria-labelledby="title-label" required />
+		<div class="error-container"
+				 ng-show="itemForm.title.$dirty && itemForm.title.$invalid && itemForm.submitted">
+			<small class="error"
+						 ng-show="itemForm.title.$error.required">
+				The title is required.
+			</small>
+			<small class="error"
+						 ng-show="itemForm.title.$error.minlength">
+				The title is required to be at least 3 characters
+			</small>
+			<small class="error"
+						 ng-show="itemForm.title.$error.title">
+				That is not a valid title. Please input a valid title.
+			</small>
+			<small class="error"
+						 ng-show="itemForm.title.$error.maxlength">
+				The title cannot be longer than 50 characters.
+			</small>
+		</div>
 	</div>
 </div>
 
 <div class="form-group">
-	<div class="col-sm-offset-2 col-sm-10">
-		<input type="submit" class="btn btn-primary" value="Save"/>
+	<label for="description" id="description-label" class="col-sm-2 control-label">Description</label>
+
+	<div class="col-sm-10">
+		<textarea type="text" ng-model="item.description" class="form-control"
+							id="description" maxlength="2512" aria-labelledby="description-label"
+							rows="4">More information about the item.</textarea>
+	</div>
+</div>
+
+<div class="form-group">
+	<label for="price" id="price-label" class="col-sm-2 control-label">Price</label>
+
+	<div class="col-sm-10">
+		<input type="number" ng-model="item.price" class="form-control" id="price"
+					 placeholder="What is the cost?" maxlength="13" name="price"
+					 ng-pattern="/^\$?[0-9,]+(\.\d{0,2})?$/"
+					 ng-maxlength="13" aria-labelledby="price-label"/>
+		<div class="error-container"
+				 ng-show="itemForm.price.$dirty && itemForm.price.$invalid && itemForm.submitted">
+			<small class="error"
+						 ng-show="itemForm.price.$error.price">
+				That is not a valid price. Please input a valid price and omit the dollar sign.
+			</small>
+			<small class="error"
+						 ng-show="itemForm.price.$error.maxlength">
+				The price cannot be longer than 13 digits including the decimal point.
+			</small>
+		</div>
+	</div>
+</div>
+
+<div class="form-group">
+	<label for="size" id="size-label" class="col-sm-2 control-label">Size</label>
+
+	<div class="col-sm-10">
+		<input type="text" ng-model="item.size" class="form-control" id="size"
+					 placeholder="What size?" maxlength="30" name="size"
+					 ng-maxlength="30" aria-labelledby="size-label"/>
+		<div class="error-container"
+				 ng-show="itemForm.size.$dirty && itemForm.title.$invalid">
+			<small class="error"
+						 ng-show="itemForm.size.$error.size">
+				That is not a valid size. Please input a valid size.
+			</small>
+			<small class="error"
+						 ng-show="itemForm.size.$error.maxlength">
+				The size cannot be longer than 30 characters.
+			</small>
+		</div>
+	</div>
+</div>
+
+<div class="form-group">
+	<label for="type" id="type-label" class="col-sm-2 control-label">Type</label>
+
+	<div class="col-sm-10">
+		<input type="text" ng-model="item.type" class="form-control" id="type"
+					 placeholder="Type of product" maxlength="30" name="type"
+					 ng-maxlength="30" aria-labelledby="type-label"/>
+		<div class="error-container"
+				 ng-show="itemForm.type.$dirty && itemForm.type.$invalid && itemForm.submitted">
+			<small class="error"
+						 ng-show="itemForm.type.$error.type">
+				That is not a valid type. Please input a valid type.
+			</small>
+			<small class="error"
+						 ng-show="itemForm.type.$error.maxlength">
+				The type cannot be longer than 30 characters.
+			</small>
+		</div>
+	</div>
+</div>
+
+<div class="form-group">
+	<label for="vendor" id="vendor-label" class="col-sm-2 control-label">Vendor</label>
+
+	<div class="col-sm-10">
+		<input type="text" ng-model="item.vendor" class="form-control" id="vendor"
+					 placeholder="Vendor/Manufacturer" maxlength="50" name="vendor"
+					 ng-maxlength="50" aria-labelledby="vendor-label" required />
+		<div class="error-container"
+				 ng-show="itemForm.vendor.$dirty && itemForm.vendor.$invalid && itemForm.submitted">
+			<small class="error"
+						 ng-show="itemForm.vendor.$error.required">
+				The vendor is required.
+			</small>
+			<small class="error"
+						 ng-show="itemForm.vendor.$error.vendor">
+				That is not a valid vendor. Please input a valid vendor.
+			</small>
+			<small class="error"
+						 ng-show="itemForm.vendor.$error.maxlength">
+				The size cannot be longer than 50 characters.
+			</small>
+		</div>
+	</div>
+</div>
+
+<div class="form-group">
+	<label for="site" id="site-label" class="col-sm-2 control-label">URL</label>
+
+	<div class="col-sm-10">
+		<input type="url" ng-model="item.site" class="form-control" id="site"
+					 placeholder="Product URL" maxlength="255" name="site"
+					 ng-maxlength="255" aria-labelledby="site-label" required />
+		<div class="error-container"
+				 ng-show="itemForm.site.$dirty && itemForm.site.$invalid && itemForm.submitted">
+			<small class="error"
+						 ng-show="itemForm.site.$error.required">
+				The vendor is required.
+			</small>
+			<small class="error"
+						 ng-show="itemForm.site.$error.site">
+				That is not a valid URL. Please input a valid URL to the vendor item.
+			</small>
+			<small class="error"
+						 ng-show="itemForm.site.$error.maxlength">
+				The size cannot be longer than 255 characters.
+			</small>
+		</div>
+	</div>
+</div>
+
+<div class="form-group">
+	<label for="gender" id="gender-label" class="col-sm-2 control-label">Gender</label>
+
+	<div class="col-sm-10">
+		<select ng-model="item.gender" class="form-control" id="gender" aria-labelledby="gender-label">
+			<option>male</option>
+			<option>female</option>
+			<option>both</option>
+		</select>
+	</div>
+</div>
+
+<div class="form-group">
+	<label for="tags" id="tags-label" class="col-sm-2 control-label">Item Tags</label>
+
+	<div class="col-sm-10">
+		<input type="text" ng-model="item.tags" class="form-control" id="tags"
+					 placeholder="Separate tags with commas" maxlength="255" name="tags"
+					 ng-maxlength="255" aria-labelledby="tags-label"/>
+		<div class="error-container"
+				 ng-show="itemForm.tags.$dirty && itemForm.tags.$invalid && itemForm.submitted">
+			<small class="error"
+						 ng-show="itemForm.tags.$error.tags">
+				These are not valid tags. Please input a valid tags separated by commas.
+			</small>
+			<small class="error"
+						 ng-show="itemForm.tags.$error.maxlength">
+				The size cannot be longer than 255 characters.
+			</small>
+		</div>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-sm-offset-2 col-sm-10 text-right">
+		<a class="btn btn-default" ui-sref="items" title="Cancel"
+			 aria-label="Cancel">Cancel</a>
+		<input type="submit" class="btn btn-primary" title="Save"
+					 aria-label="Save" value="Save"/>
 	</div>
 </div>
 ```
@@ -395,8 +552,8 @@ item-add.html:
 This template is used to accept user inputs and add a new item to our system. Here is the content:
 
 ```html
-<form class="form-horizontal" role="form" ng-submit="addItem()">
-  <div ng-include="'partials/_form.html'"></div>
+<form class="form-horizontal" name="itemForm" role="form" ng-submit="addItem()">
+	<div ng-include="'partials/_form.html'"></div>
 </form>
 ```
 
@@ -407,8 +564,8 @@ item-edit.html:
 This template is used to accept user inputs and update an existing item in our system.
 
 ```html
-<form class="form-horizontal" role="form" ng-submit="updateItem()">
-  <div ng-include="'partials/_form.html'"></div>
+<form class="form-horizontal" name="itemForm" role="form" ng-submit="updateItem()">
+	<div ng-include="'partials/_form.html'"></div>
 </form>
 ```
 
@@ -422,8 +579,7 @@ This template is used to show details about a single item. The content looks lik
 <table class="table itemtable">
 	<tbody>
 		<tr>
-			<td><h3>Details for {{item.title}}</h3></td>
-			<td></td>
+			<td colspan="2"><h3>Details for {{item.title}}</h3></td>
 		</tr>
 		<tr>
 			<td>Title</td>
@@ -438,13 +594,36 @@ This template is used to show details about a single item. The content looks lik
 			<td>{{item.price}}</td>
 		</tr>
 		<tr>
+			<td>Type</td>
+			<td>{{item.type}}</td>
+		</tr>
+		<tr>
+			<td>Size</td>
+			<td>{{item.size}}</td>
+		</tr>
+		<tr>
+			<td>Vendor</td>
+			<td>{{item.vendor}}</td>
+		</tr>
+		<tr>
+			<td>URL</td>
+			<td>{{item.site}}</td>
+		</tr>
+		<tr>
+			<td>Target Gender</td>
+			<td>{{item.gender}}</td>
+		</tr>
+		<tr>
 			<td>Tags</td>
 			<td>{{item.tags}}</td>
 		</tr>
 	</tbody>
 </table>
-<div>
-	<a class="btn btn-primary" ui-sref="editItem({id:item.id})" title="Edit">Edit</a>
+<div class="text-right">
+	<a class="btn btn-default" ui-sref="items" title="Cancel"
+		 aria-label="Cancel">Cancel</a>
+	<a class="btn btn-primary" ui-sref="editItem({id:item.id})" title="Edit"
+		 aria-label="Edit">Edit</a>
 </div>
 ```
 
@@ -455,19 +634,22 @@ items.html:
 This template displays all the items in the system.
 
 ```html
-<a ui-sref="newItem" class="btn-primary btn-lg nodecoration" title="Add New Item">Add New Item</a>
+<div class="secondary text-right">
+	<a ui-sref="newItem" class="btn-primary btn nodecoration" title="Add New Item">Add New Item</a>
+</div>
 <table class="table itemtable">
 	<tbody>
 		<tr>
-			<td><h3>All Items</h3></td>
-			<td></td>
+			<td colspan="2"><h3>All Items</h3></td>
 		</tr>
 		<tr ng-repeat="item in items">
-			<td>{{item.title}}</td>
-			<td>
-				<a class="btn btn-primary" ui-sref="viewItem({id:item.id})" title="View">View</a>
-				<a class="btn btn-danger" ng-click="deleteItem(item)" title="Delete">Delete</a>
+			<td nowrap>
+				<a class="btn btn-default" ui-sref="viewItem({ id:item.id })" title="View"
+					 aria-label="View">View</a>
+				<a class="btn btn-danger" ng-click="deleteItem(item)" title="Delete"
+					 aria-label="Delete">Delete</a>
 			</td>
+			<td>{{item.title}}</td>
 		</tr>
 	</tbody>
 </table>
@@ -489,15 +671,18 @@ controllers.js:
 ```javascript
 angular.module('crudApp.controllers', []).controller('ItemListController', function ($scope, $state, popupService, $window, Item) {
 
+	// Fetch all items. Issues a GET to /api/items
 	$scope.items = Item.query();
 
+	// Delete an item. Issues a DELETE to /api/items/:id
 	$scope.deleteItem = function (item) {
 		if (popupService.showPopup('Really delete this?')) {
 			item.$delete(function () {
 				$window.location.href = '';
 			});
 		}
-	}
+	};
+
 
 }).controller('ItemViewController', function ($scope, $stateParams, Item) {
 
@@ -505,28 +690,48 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 
 }).controller('ItemCreateController', function ($scope, $state, $stateParams, Item) {
 
+	$scope.submitted = false;
+
+	// Create new item instance. Properties will be set via ng-model on UI.
 	$scope.item = new Item();
 
 	$scope.addItem = function () {
-		$scope.item.$save(function () {
-			$state.go('items');
-		});
-	}
+		console.log($scope.item);
+		if ($scope.itemForm.$valid) {
+			// Create a new item. Issues a POST to /api/items
+			$scope.item.$save(function () {
+				// On success, go back to home i.e. items state.
+				$state.go('items');
+			});
+		} else {
+			$scope.itemForm.submitted = true;
+		}
+	};
 
 }).controller('ItemEditController', function ($scope, $state, $stateParams, Item) {
 
+	$scope.submitted = false;
+
 	$scope.updateItem = function () {
-		$scope.item.$update(function () {
-			$state.go('items');
-		});
+		console.log($scope.item);
+		if ($scope.itemForm.$valid) {
+			// Update the edited item. Issues a POST to /api/items/:id
+			$scope.item.$update(function () {
+				// On success, go back to home i.e. items state.
+				$state.go('items');
+			});
+		} else {
+			$scope.itemForm.submitted = true;
+		}
 	};
 
+	// Issues a GET request to /api/items/:id to get an item to update
 	$scope.loadItem = function () {
-		$scope.item = Item.get({id: $stateParams.id});
+		$scope.item = Item.get({ id: $stateParams.id });
 	};
 
 	$scope.loadItem();
-});
+
 ```
 
 ## Conclusion
