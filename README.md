@@ -103,7 +103,7 @@ operation we need to modify our custom factory Entity as shown below.
 angular.module('myApp.services').factory('Item', function ($resource) {
   return $resource('/api/items/:id', { id: '@id' }, {
     update: {
-      method: 'POST' // this method issues a PUT request
+      method: 'POST' // this method issues a POST request
     }
   });
 });
@@ -566,7 +566,7 @@ This template is used to accept user inputs and update an existing item in our s
 </form>
 ```
 
-Once the form is submitted the scope function `updateItem()` is called which issues a PUT request to server to update
+Once the form is submitted the scope function `updateItem()` is called which issues a POST request to server to update
  an item.
 
 item-view.html:
