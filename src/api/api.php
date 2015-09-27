@@ -8,13 +8,6 @@ Logger::configure("log4php-config.xml");
 /**
  * Created by Kevin Boutin on 08/23/15.
  *
- * This class expects the query string and the function name to match.
- * For example, If the query string value is request=deleteItem, the function
- * should be:
- * 		function deleteItem() {
- * 			// Your code goes here
- * 		}
- *
  * Use the following for sanitized input (note the preceding underscore):
  * 		$object->_request['example']
  *
@@ -57,37 +50,37 @@ class API extends REST
 			$this->log->info($key . " - " . $value);
 		}
 
-		if(isset($_SERVER['CONTENT_TYPE'])) {
+		if (isset($_SERVER['CONTENT_TYPE'])) {
 			$content_type = $_SERVER['CONTENT_TYPE'];
 			$this->log->info($content_type);
 		}
 
 		$url_elements = explode("/", $_REQUEST['x']);
-		if(isset($url_elements[1])) {
+		if (isset($url_elements[1])) {
 			$id = (int) trim($url_elements[1]);
 		}
 
 		$this->log->info("Request method: " . $_SERVER['REQUEST_METHOD']);
 		$req_method = $_SERVER['REQUEST_METHOD'];
-		if($req_method == "GET") {
-			if($_GET['id']) {
+		if ($req_method == "GET") {
+			if ($_GET['id']) {
 				$this->log->info("GET called with id: " . $_GET['id']);
 				$this->item((int) $_GET['id']);
-			} else if($id != "") {
+			} else if ($id != "") {
 				$this->log->info("GET called with id: " . $id);
 				$this->item($id);
 			} else {
 				$this->log->info("GET called with no id.");
 				$this->items();
 			}
-		} else if($req_method == "POST") {
-			if(empty($id)) {
+		} else if ($req_method == "POST") {
+			if (empty($id)) {
 				$this->insertItem();
 			} else {
 				$this->updateItem($id);
 			}
 		} else if($req_method == "DELETE") {
-			if(empty($id)) {
+			if (empty($id)) {
 				$this->log->error("Id is empty for some reason when trying to delete. This may have happened because
 				the row was already deleted and empty on the page but they clicked the Delete button anyway.");
 			} else {
