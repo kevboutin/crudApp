@@ -131,7 +131,7 @@ When the `$update()` function is called, it does the following:
 AngularJS knows that `$update()` function will trigger a POST request to the URL `/api/items/:id`.
 It reads the value of `$scope.item.id`, assigns the value to `:id` and generates the URL.
 Sends a POST request to the URL with `$scope.item` as the post body.
-Similarly, if you want to delete an entry it can be done as following:
+Similarly, if you want to delete an item it can be done as following:
 
 ```javascript
 $scope.item = Item.get({ id: $scope.id }, function () {
@@ -154,7 +154,7 @@ you pass to `$resource()`. If you want to turn this off you can do so like this:
 angular.module('myApp.services').factory('Item', function ($resource) {
   return $resource('/api/items/:id', { id: '@id' }, {
     update: {
-      method: 'POST' // this method issues a PUT request
+      method: 'POST' // this method issues a POST request
     }
   }, {
     stripTrailingSlashes: false
@@ -610,7 +610,7 @@ This template is used to show details about a single item. The content looks lik
 			<td>{{item.site}}</td>
 		</tr>
 		<tr>
-			<td>Target Gender</td>
+			<td>Gender</td>
 			<td>{{item.gender}}</td>
 		</tr>
 		<tr>
