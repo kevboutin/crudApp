@@ -128,22 +128,22 @@ $scope.entry = Item.get({ id: $scope.id }, function () {
 
 When the `$update()` function is called, it does the following:
 
-AngularJS knows that `$update()` function will trigger a PUT request to the URL `/api/entries/:id`.
-It reads the value of `$scope.entry.id`, assigns the value to `:id` and generates the URL.
-Sends a PUT request to the URL with `$scope.entry` as the post body.
+AngularJS knows that `$update()` function will trigger a POST request to the URL `/api/items/:id`.
+It reads the value of `$scope.item.id`, assigns the value to `:id` and generates the URL.
+Sends a POST request to the URL with `$scope.item` as the post body.
 Similarly, if you want to delete an entry it can be done as following:
 
 ```javascript
-$scope.entry = Item.get({ id: $scope.id }, function () {
-  // $scope.entry is fetched from server and is an instance of Entry
-  $scope.entry.data = 'something else';
-  $scope.entry.$delete(function () {
+$scope.item = Item.get({ id: $scope.id }, function () {
+  // $scope.item is fetched from server and is an instance of Entry
+  $scope.item.data = 'something else';
+  $scope.item.$delete(function () {
     //gone forever!
   });
 });
 ```
 
-It follows the same steps as above, except the request type is DELETE instead of PUT.
+It follows the same steps as above, except the request type is DELETE instead of POST.
 
 We have covered all the operations in a CRUD, but left with a small thing. The `$resource` function also has an
 optional fourth parameter. This is a hash with custom settings. Currently, there is only one setting available which 
@@ -151,8 +151,8 @@ is `stripTrailingSlashes`. By default this is set to true, which means trailing 
 you pass to `$resource()`. If you want to turn this off you can do so like this:
 
 ```javascript
-angular.module('myApp.services').factory('Entry', function ($resource) {
-  return $resource('/api/entries/:id', { id: '@id' }, {
+angular.module('myApp.services').factory('Item', function ($resource) {
+  return $resource('/api/items/:id', { id: '@id' }, {
     update: {
       method: 'POST' // this method issues a PUT request
     }
@@ -225,7 +225,7 @@ services.js:
 angular.module('crudApp.services', []).factory('Item', function ($resource) {
 	return $resource('http://crudapp.weprovideit.com/api/items/:id', {id: '@id'}, {
 		update: {
-			method: 'PUT'
+			method: 'POST'
 		}
 	});
 }).service('popupService', function ($window) {
