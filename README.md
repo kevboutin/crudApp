@@ -15,8 +15,7 @@ format:
 
 You can create the endpoints using the server side language of your choice. Using Node + Express + MongoDB to design
 the RESTful API is popular but also PHP + MySQL is popular even if older. Once you have the URLs ready, 
-you can make use of
-`$resource` for interacting with these URLs. So, let’s see how exactly `$resource` works.
+you can make use of `$resource` for interacting with these URLs. So, let’s see how exactly `$resource` works.
 
 ## How Does $resource Work?
 To use `$resource` inside your controller/service you need to declare a dependency on `$resource`. The next step is
@@ -79,9 +78,9 @@ argument is a callback which is called when the data is saved. You might recall 
 out of this class, set various properties on it and finally save the object to backend.
 
 Ideally, you will only use `get()` and `query()` on the resource class (Entry in our case). All the non GET methods like
- `save()` and `delete()` are also available in the instance obtained by calling `new Item()` (call this a `$resource`
- instance). But the difference is that these methods are prefixed with a `$`. So, the methods available in the
- `$resource` instance (as opposed to `$resource` class) are:
+`save()` and `delete()` are also available in the instance obtained by calling `new Item()` (call this a `$resource`
+instance). But the difference is that these methods are prefixed with a `$`. So, the methods available in the 
+`$resource` instance (as opposed to `$resource` class) are:
 
 1. $save()
 2. $delete()
@@ -169,13 +168,11 @@ you can go through the documentation.
 ## Building a Generic Item App
 To reinforce the concepts of `$resource` let’s build an app for typical shop keepers. This is going to be a CRUD where 
 users can add a new item to our database, update an existing item, and finally delete one. We will use `$resource` to 
-interact with the REST API. You can check out a live demo of what we are going to build [here](http://crudapp
-.weprovideit
-.com/).
+interact with the REST API. You can check out a live demo of what we are going to build [here](http://crudapp.weprovideit.com/).
 
 Just note that the API I have built is CORS enabled, so it is possible for you to create an Angular app separately 
-and use the URL [http://crudapp.weprovideit.com/](http://crudapp.weprovideit.com/) as the API
-. You can develop the Angular app and play around with it without worrying about the backend.
+and use the URL [http://crudapp.weprovideit.com/](http://crudapp.weprovideit.com/) as the API. You can develop the
+Angular app and play around with it without worrying about the backend.
 
 ## Our API
 I have created a RESTful backend using PHP and MySQL. Take a look at the following table to get to know the API.
@@ -188,7 +185,9 @@ I have created a RESTful backend using PHP and MySQL. Take a look at the followi
 | api/items/:id | POST      | JSON string | Updates existing item |
 | api/items/:id | DELETE    | empty       | Deletes existing item |
 
-
+Try using your browser to view the API functionality. Use http://crudapp.weprovideit.com/api/items/1 to view a single
+item and http://crudapp.weprovideit.com/api/items to view all items.
+ 
 ### Directory Structure
 Let’s start with the following directory structure for our AngularJS app:
 
@@ -543,7 +542,7 @@ Here is the content of `_form.html`:
 </div>
 ```
 
-The template uses ng-model to bind various item details to different properties of scope model item.
+The template uses ng-model to bind various item details to different properties of scope model item. The `onfocus` attribute must be used as the price input cannot start with a `type="number"` as this will prevent the field from being pre-populated on edit. We use the `onfocus` event to change the attribute so the desired number behavior is eventually observed.
 
 item-add.html:
 This template is used to accept user inputs and add a new item to our system. Here is the content:
