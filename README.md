@@ -389,14 +389,11 @@ Here is the content of `_form.html`:
 	</div>
 </div>
 
-<div class="form-group">
-	<label for="price" id="price-label" class="col-sm-2 control-label">Price</label>
-
 	<div class="col-sm-10">
-		<input type="number" ng-model="item.price" class="form-control" id="price"
-					 placeholder="What is the cost?" maxlength="13" name="price"
-					 ng-pattern="/^\$?[0-9,]+(\.\d{0,2})?$/"
-					 ng-maxlength="13" aria-labelledby="price-label"/>
+		<input type="text" ng-model="item.price" class="form-control" id="price"
+					 placeholder="0.00" maxlength="13" name="price" step="0.01"
+					 ng-maxlength="13" aria-labelledby="price-label"
+					 onfocus="this.type='number';"/>
 		<div class="error-container"
 				 ng-show="itemForm.price.$dirty && itemForm.price.$invalid && itemForm.submitted">
 			<small class="error"
@@ -678,7 +675,8 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 	$scope.deleteItem = function (item) {
 		if (popupService.showPopup('Really delete this?')) {
 			item.$delete(function () {
-				$window.location.href = '';
+				$scope.items = Item.query();
+				$window.location.reload();
 			});
 		}
 	};
