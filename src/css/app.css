@@ -33,6 +33,10 @@ a {
 	border-bottom: 1px solid #ddd;
 }
 
+input.ng-invalid {
+	border: 1px solid red;
+}
+
 .btn {
 	margin-left: 6px;
 }

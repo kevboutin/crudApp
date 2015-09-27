@@ -21,27 +21,38 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 	$scope.item = Item.get({ id: $stateParams.id });
 
 }).controller('ItemCreateController', function ($scope, $state, $stateParams, Item) {
+	$scope.submitted = false;
 
 	// Create new item instance. Properties will be set via ng-model on UI.
 	$scope.item = new Item();
 
 	$scope.addItem = function () {
 		console.log($scope.item);
-		// Create a new item. Issues a POST to /api/items
-		$scope.item.$save(function () {
-			// On success, go back to home i.e. items state.
-			$state.go('items');
-		});
+		if ($scope.itemForm.$valid) {
+			// Create a new item. Issues a POST to /api/items
+			$scope.item.$save(function () {
+				// On success, go back to home i.e. items state.
+				$state.go('items');
+			});
+		} else {
+			$scope.itemForm.submitted = true;
+		}
 	};
 
 }).controller('ItemEditController', function ($scope, $state, $stateParams, Item) {
+	$scope.submitted = false;
 
-	// Update the edited item. Issues a POST to /api/items/:id
 	$scope.updateItem = function () {
-		$scope.item.$update(function () {
-			// On success, go back to home i.e. items state.
-			$state.go('items');
-		});
+		console.log($scope.item);
+		if ($scope.itemForm.$valid) {
+			// Update the edited item. Issues a POST to /api/items/:id
+			$scope.item.$update(function () {
+				// On success, go back to home i.e. items state.
+				$state.go('items');
+			});
+		} else {
+			$scope.itemForm.submitted = true;
+		}
 	};
 
 	// Issues a GET request to /api/items/:id to get an item to update
