@@ -42,7 +42,7 @@
 
 	<div class="col-sm-10">
 		<input type="number" ng-model="item.price" class="form-control" id="price"
-					 placeholder="What is the cost?" maxlength="13" name="price" step=""any"
+					 placeholder="What is the cost?" maxlength="13" name="price" step="0.01"
 					 ng-pattern="/^\$?[0-9,]+(\.\d{0,2})?$/"
 					 ng-maxlength="13" aria-labelledby="price-label"/>
 		<div class="error-container"
