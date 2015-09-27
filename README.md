@@ -111,16 +111,16 @@ angular.module('myApp.services').factory('Item', function ($resource) {
 
 The second argument to `$resource()` is a hash indicating what should be the value of the parameter `:id` in the URL.
 Setting it to `@id` means whenever we will call methods like `$update()` and `$delete()` on the resource instance, the
-value of `:id` will be set to the `id` property of the instance. This is useful for PUT and DELETE requests. Also note
+value of `:id` will be set to the `id` property of the instance. This is useful for POST and DELETE requests. Also note
 the third argument. This is a hash that allows us to add any custom methods to the resource class. If the method
-issues a non-GET request it’s made available to the `$resource` instance with a `$` prefix. So, let’s see how to use
+issues a non-GET request it is made available to the `$resource` instance with a `$` prefix. So, let’s see how to use
 our `$update` method. Assuming we are in a controller:
 
 ```javascript
 $scope.entry = Item.get({ id: $scope.id }, function () {
-  // $scope.entry is fetched from server and is an instance of Entry
-  $scope.entry.data = 'something else';
-  $scope.entry.$update(function () {
+  // $scope.item is fetched from server and is an instance of Item
+  $scope.item.data = 'something else';
+  $scope.item.$update(function () {
     //updated in the backend
   });
 });
@@ -135,7 +135,7 @@ Similarly, if you want to delete an entry it can be done as following:
 
 ```javascript
 $scope.item = Item.get({ id: $scope.id }, function () {
-  // $scope.item is fetched from server and is an instance of Entry
+  // $scope.item is fetched from server and is an instance of Item
   $scope.item.data = 'something else';
   $scope.item.$delete(function () {
     //gone forever!
