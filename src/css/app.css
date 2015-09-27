@@ -44,3 +44,24 @@ input.ng-invalid {
 a.nodecoration {
 	text-decoration: none;
 }
+
+a.offscreen {
+	position: absolute;
+	left: -1000px;
+	top: -1000px;
+	width: 1px;
+	height: 1px;
+	text-align: left;
+	overflow: hidden;
+}
+
+a.offscreen:focus, a.offscreen:active, a.offscreen:hover {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: auto;
+	height: auto;
+	overflow: visible;
+	background-color: #ff3;
+	border: 1px dotted #000;
+}

@@ -1,5 +1,5 @@
 # crudApp
-Basic CRUD web application in AngularJS for maintaining products/items with a RESTful service.
+Basic CRUD web application in AngularJS for maintaining products/items with a PHP RESTful service.
 
 ## Getting Started
 Angular's `$resource` expects a classic RESTful backend. This means you should have REST endpoints in the following
