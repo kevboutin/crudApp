@@ -200,7 +200,7 @@ i.modified FROM items i WHERE i.id=$id";
 			if (!in_array($desired_key, $keys)) {
 				$$desired_key = '';
 			} else {
-				$$desired_key = $item[$desired_key];
+				$$desired_key = strip_tags(addslashes($item[$desired_key]));
 			}
 
 			$columns = $columns . $desired_key . ',';
@@ -239,7 +239,7 @@ i.modified FROM items i WHERE i.id=$id";
 			if (!in_array($desired_key, $keys)) {
 				$$desired_key = '';
 			} else {
-				$$desired_key = $item[$desired_key];
+				$$desired_key = strip_tags(addslashes($item[$desired_key]));
 			}
 
 			$columns = $columns . $desired_key . "='" . $$desired_key . "',";
@@ -286,12 +286,6 @@ i.modified FROM items i WHERE i.id=$id";
 		if (is_array($data)) {
 			return json_encode($data);
 		}
-	}
-
-	private function startsWith($haystack, $needle)
-	{
-		$length = strlen($needle);
-		return (substr($haystack, 0, $length) === $needle);
 	}
 }
 
