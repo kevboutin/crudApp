@@ -185,8 +185,8 @@ I have created a RESTful backend using PHP and MySQL. Take a look at the followi
 | api/items/:id | POST      | JSON string | Updates existing item |
 | api/items/:id | DELETE    | empty       | Deletes existing item |
 
-Try using your browser to view the API functionality. Use [http://crudapp.weprovideit.com/api/items/1]http://crudapp.weprovideit.com/api/items/1 to view a single
-item and [http://crudapp.weprovideit.com/api/items]http://crudapp.weprovideit.com/api/items to view all items.
+Try using your browser to view the API functionality. Use [http://crudapp.weprovideit.com/api/items/1](http://crudapp.weprovideit.com/api/items/1) to view a single
+item and [http://crudapp.weprovideit.com/api/items](http://crudapp.weprovideit.com/api/items) to view all items.
  
 ### Directory Structure
 Let’s start with the following directory structure for our AngularJS app:
@@ -733,7 +733,7 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 
 ## Conclusion
 Assuming the app is deployed under `localhost/crudApp`, you can access it at [http://localhost/crudApp/index.html]
-(http://localhost/crudApp/index.html). Feel free to access this example in action at [http://crudapp.weprovideit.com/]http://crudapp.weprovideit.com/.
+(http://localhost/crudApp/index.html). Feel free to access this example in action at [http://crudapp.weprovideit.com/](http://crudapp.weprovideit.com/).
 
 ## License
 The code is available under the [MIT license](LICENSE.txt).
