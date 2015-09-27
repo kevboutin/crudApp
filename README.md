@@ -171,8 +171,8 @@ users can add a new item to our database, update an existing item, and finally d
 interact with the REST API. You can check out a live demo of what we are going to build [here](http://crudapp.weprovideit.com/).
 
 Just note that the API I have built is CORS enabled, so it is possible for you to create an Angular app separately 
-and use the URL [http://crudapp.weprovideit.com/](http://crudapp.weprovideit.com/) as the API. You can develop the
-Angular app and play around with it without worrying about the backend.
+and use the URL [http://crudapp.weprovideit.com/api/items](http://crudapp.weprovideit.com/api/items/) as the API. 
+You can develop the Angular app and play around with it without worrying about the backend.
 
 ## Our API
 I have created a RESTful backend using PHP and MySQL. Take a look at the following table to get to know the API.
