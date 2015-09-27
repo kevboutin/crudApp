@@ -10,7 +10,8 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 	$scope.deleteItem = function (item) {
 		if (popupService.showPopup('Really delete this?')) {
 			item.$delete(function () {
-				$window.location.href = '';
+				$scope.items = Item.query();
+				$window.location.reload();
 			});
 		}
 	};
