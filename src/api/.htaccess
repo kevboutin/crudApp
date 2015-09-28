@@ -10,4 +10,8 @@ RewriteRule ^(.*)$ api.php [QSA,NC,L]
 
 RewriteCond %{REQUEST_FILENAME} -s
 RewriteRule ^(.*)$ api.php [QSA,NC,L]
+
+Header add Access-Control-Allow-Origin "*"
+Header add Access-Control-Allow-Methods: "GET, POST, OPTIONS, DELETE"
+Header add Access-Control-Allow-Headers: "Content-Type"
 </IfModule>

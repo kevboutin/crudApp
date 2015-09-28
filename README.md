@@ -735,8 +735,8 @@ angular.module('crudApp.controllers', []).controller('ItemListController', funct
 Assuming the app is deployed under `localhost/crudApp`, you can access it at [http://localhost/crudApp/index.html]
 (http://localhost/crudApp/index.html). Feel free to access this example in action at [http://crudapp.weprovideit.com/](http://crudapp.weprovideit.com/).
 
-## License
-The code is available under the [MIT license](LICENSE.txt).
+## Copyright and License
+The library is Copyright (c) 2015 weProvideIT.com, and distributed under the [MIT license](LICENSE.txt).
 
 ## Usage
 Download, fork or clone the repository, change the domain in the URL contained within `src/js/services.js` to point to 

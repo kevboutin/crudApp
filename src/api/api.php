@@ -14,8 +14,7 @@ Logger::configure("log4php-config.xml");
  * Use the following for responses:
  * 		$object->response(output_data, status_code);
  */
-class API extends REST
-{
+class API extends REST {
 	public $data = "";
 
 	const DB_SERVER = "127.0.0.1";
@@ -27,8 +26,7 @@ class API extends REST
 	private $mysqli = NULL;
 	private $log;
 
-	public function __construct()
-	{
+	public function __construct() {
 		parent::__construct();        // Init parent constructor
 		$this->log = Logger::getLogger(__CLASS__);
 		$this->dbConnect();           // Initiate Database connection
@@ -38,8 +36,7 @@ class API extends REST
 	/*
 	 * Dynamically call the method based on the query string
 	 */
-	public function processApi()
-	{
+	public function processApi() {
 		$id = "";
 		$content_type = "application/x-www-form-urlencoded";
 		$body_params = "";
@@ -53,6 +50,10 @@ class API extends REST
 		if (isset($_SERVER['CONTENT_TYPE'])) {
 			$content_type = $_SERVER['CONTENT_TYPE'];
 			$this->log->info($content_type);
+		}
+
+		if (isset($_SERVER['HTTP_ORIGIN'])) {
+			$this->log->debug("HTTP_ORIGIN set so returning origin header. " . $_SERVER['HTTP_ORIGIN']);
 		}
 
 		$url_elements = explode("/", $_REQUEST['x']);
@@ -95,13 +96,11 @@ class API extends REST
 	/*
 	 *  Connect to Database
 	 */
-	private function dbConnect()
-	{
+	private function dbConnect() {
 		$this->mysqli = new mysqli(self::DB_SERVER, self::DB_USER, self::DB_PASSWORD, self::DB);
 	}
 
-	private function login()
-	{
+	private function login() {
 		if ($this->get_request_method() != "POST") {
 			$this->log->error("Returning 406 - not using POST.");
 			$this->response('', 406);
@@ -130,8 +129,7 @@ class API extends REST
 		$this->response($this->json($error), 400);
 	}
 
-	private function items()
-	{
+	private function items() {
 		if ($this->get_request_method() != "GET") {
 			$this->log->info("Returning 406 - not using GET.");
 			$this->response('', 406);
@@ -153,8 +151,7 @@ i.modified FROM items i ORDER BY i.title";
 		$this->response('', 204);  // If no records "No Content" status
 	}
 
-	private function item($id)
-	{
+	private function item($id) {
 		if ($this->get_request_method() != "GET") {
 			$this->log->error("Returning 406 - not using GET.");
 			$this->response('', 406);
@@ -175,8 +172,7 @@ i.modified FROM items i WHERE i.id=$id";
 		$this->response('', 204);  // If no records, use "No Content" status
 	}
 
-	private function insertItem()
-	{
+	private function insertItem() {
 		if ($this->get_request_method() != "POST") {
 			$this->log->error("Returning 406 - not using POST.");
 			$this->response('', 406);
@@ -213,8 +209,7 @@ i.modified FROM items i WHERE i.id=$id";
 		}
 	}
 
-	private function updateItem($id)
-	{
+	private function updateItem($id) {
 		if ($this->get_request_method() != "POST") {
 			$this->log->error("Returning 406 - not using POST.");
 			$this->response('', 406);
@@ -251,8 +246,7 @@ i.modified FROM items i WHERE i.id=$id";
 		}
 	}
 
-	private function deleteItem($id)
-	{
+	private function deleteItem($id) {
 		if ($this->get_request_method() != "DELETE") {
 			$this->log->error("Returning 406 - not using DELETE.");
 			$this->response('', 406);
@@ -274,8 +268,7 @@ i.modified FROM items i WHERE i.id=$id";
 	/*
 	 *	Encode array into JSON
 	*/
-	private function json($data)
-	{
+	private function json($data) {
 		if (is_array($data)) {
 			return json_encode($data);
 		}
