@@ -17,7 +17,7 @@ Logger::configure("log4php-config.xml");
 class API extends REST {
 	public $data = "";
 
-	const DB_SERVER = "127.0.0.1";
+	const DB_SERVER = "p:127.0.0.1";
 	const DB_USER = "weprovid_shop";
 	const DB_PASSWORD = "";
 	const DB = "weprovid_shop";
