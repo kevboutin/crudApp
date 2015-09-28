@@ -80,7 +80,11 @@ class API extends REST {
 			} else {
 				$this->updateItem($id);
 			}
-		} else if($req_method == "DELETE") {
+		} else if ($req_method == "OPTIONS") {
+			header("Allow: GET, POST, OPTIONS, DELETE");
+			header("Content-Length: 0");
+			$this->response('', 200);
+		} else if ($req_method == "DELETE") {
 			if (empty($id)) {
 				$this->log->error("Id is empty for some reason when trying to delete. This may have happened because
 				the row was already deleted and empty on the page but they clicked the Delete button anyway.");
