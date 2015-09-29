@@ -18,9 +18,8 @@ class API extends REST {
 	public $data = "";
 
 	const DB_SERVER = "p:127.0.0.1";
-	const DB_USER = "weprovid_shop";
-	const DB_PASSWORD = "";
 	const DB = "weprovid_shop";
+	const DB_CREDENTIALS_FILEPATH = "../../crudapp-credentials.json";
 
 	private $db = NULL;
 	private $mysqli = NULL;
@@ -29,7 +28,9 @@ class API extends REST {
 	public function __construct() {
 		parent::__construct();        // Init parent constructor
 		$this->log = Logger::getLogger(__CLASS__);
-		$this->dbConnect();           // Initiate Database connection
+		$json = file_get_contents(self::DB_CREDENTIALS_FILEPATH);
+		$credentials = json_decode($json, true);
+		$this->dbConnect($credentials["user"], $credentials["password"]);
 		$this->log->info("Connected to database " . self::DB . ".");
 	}
 
@@ -39,9 +40,7 @@ class API extends REST {
 	public function processApi() {
 		$id = "";
 		$content_type = "application/x-www-form-urlencoded";
-		$body_params = "";
-		foreach ($_REQUEST as $key => $value)
-		{
+		foreach ($_REQUEST as $key => $value) {
 			$value = addslashes($value);
 			$value = strip_tags($value);
 			$this->log->info($key . " - " . $value);
@@ -61,8 +60,8 @@ class API extends REST {
 			$id = (int) trim($url_elements[1]);
 		}
 
-		$this->log->info("Request method: " . $_SERVER['REQUEST_METHOD']);
 		$req_method = $_SERVER['REQUEST_METHOD'];
+		$this->log->info("Request method: " . $req_method);
 		if ($req_method == "GET") {
 			if ($_GET['id']) {
 				$this->log->info("GET called with id: " . $_GET['id']);
@@ -86,8 +85,7 @@ class API extends REST {
 			$this->response('', 200);
 		} else if ($req_method == "DELETE") {
 			if (empty($id)) {
-				$this->log->error("Id is empty for some reason when trying to delete. This may have happened because
-				the row was already deleted and empty on the page but they clicked the Delete button anyway.");
+				$this->log->error("Id is empty for some reason when trying to delete.");
 			} else {
 				$this->deleteItem((int)$id);
 			}
@@ -100,8 +98,8 @@ class API extends REST {
 	/*
 	 *  Connect to Database
 	 */
-	private function dbConnect() {
-		$this->mysqli = new mysqli(self::DB_SERVER, self::DB_USER, self::DB_PASSWORD, self::DB);
+	private function dbConnect($user, $password) {
+		$this->mysqli = new mysqli(self::DB_SERVER, $user, $password, self::DB);
 	}
 
 	private function login() {
@@ -109,11 +107,12 @@ class API extends REST {
 			$this->log->error("Returning 406 - not using POST.");
 			$this->response('', 406);
 		}
+
 		$email = $this->_request['email'];
 		$password = $this->_request['pwd'];
 		if (!empty($email) and !empty($password)) {
 			if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
-				$query = "SELECT id, email, role FROM users WHERE email = '$email' AND password = '" . hash("sha512", $password) . "' LIMIT 1";
+				$query = "SELECT id, email, role FROM users WHERE email='" . $email . "' AND password='" . hash("sha512", $password) . "' LIMIT 1";
 				$this->log->info($query);
 				$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 
@@ -138,6 +137,7 @@ class API extends REST {
 			$this->log->info("Returning 406 - not using GET.");
 			$this->response('', 406);
 		}
+
 		$query = "SELECT DISTINCT i.id, i.title, i.description, i.price, i.type, i.size, i.gender, i.vendor, i.site, i.tags,
 i.modified FROM items i ORDER BY i.title";
 		$this->log->debug($query);
@@ -151,6 +151,7 @@ i.modified FROM items i ORDER BY i.title";
 			$this->log->info("Returning 200 - successfully selected " . $r->num_rows . " item(s).");
 			$this->response($this->json($result), 200); // send user details
 		}
+
 		$this->log->info("Returning 204 - no content.");
 		$this->response('', 204);  // If no records "No Content" status
 	}
@@ -163,7 +164,7 @@ i.modified FROM items i ORDER BY i.title";
 
 		if ($id > 0) {
 			$query = "SELECT DISTINCT i.id, i.title, i.description, i.price, i.type, i.size, i.gender, i.vendor, i.site, i.tags,
-i.modified FROM items i WHERE i.id=$id";
+i.modified FROM items i WHERE i.id=" . $id;
 			$this->log->debug($query);
 			$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 			if ($r->num_rows > 0) {
@@ -220,8 +221,7 @@ i.modified FROM items i WHERE i.id=$id";
 		}
 
 		$item = json_decode(file_get_contents("php://input"), true);
-		$column_names = array('id', 'title', 'description', 'price', 'type', 'size', 'vendor', 'site', 'gender',
-			'tags');
+		$column_names = array('id', 'title', 'description', 'price', 'type', 'size', 'vendor', 'site', 'gender', 'tags');
 		$keys = array_keys($item);
 		$columns = '';
 		$values = '';
@@ -237,7 +237,7 @@ i.modified FROM items i WHERE i.id=$id";
 			$columns = $columns . $desired_key . "='" . $$desired_key . "',";
 		}
 
-		$query = "UPDATE items SET " . trim($columns, ',') . " WHERE id=$id";
+		$query = "UPDATE items SET " . trim($columns, ',') . " WHERE id=" . $id;
 		$this->log->debug($query);
 		if (!empty($item)) {
 			$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
@@ -257,7 +257,7 @@ i.modified FROM items i WHERE i.id=$id";
 		}
 
 		if ($id > 0) {
-			$query = "DELETE FROM items WHERE id = $id";
+			$query = "DELETE FROM items WHERE id=" . $id;
 			$this->log->debug($query);
 			$r = $this->mysqli->query($query) or die($this->mysqli->error . __LINE__);
 			$success = array('status' => "Success", "msg" => "Successfully deleted one item.");
