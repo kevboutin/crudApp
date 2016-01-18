@@ -35,7 +35,7 @@ class API extends REST {
 	}
 
 	/*
-	 * Dynamically call the method based on the query string
+	 * Identify the request and respond accordingly.
 	 */
 	public function processApi() {
 		$id = "";

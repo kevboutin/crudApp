@@ -4,6 +4,9 @@ var path = require('path');
 
 var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')(); // Load all gulp plugins automatically
+plugins.jscs = require('gulp-jscs');
+plugins.jshint = require('gulp-jshint');
+plugins.replace = require('gulp-replace');
 
 var runSequence = require('run-sequence');    // Temporary solution until gulp 4 (https://github.com/gulpjs/gulp/issues/355)
 
@@ -32,6 +35,7 @@ gulp.task('archive:zip', function (done) {
 	});
 	var output = fs.createWriteStream(archiveName);
 
+	/** @namespace archiver.on */
 	archiver.on('error', function (error) {
 		done();
 		throw error;
@@ -52,6 +56,7 @@ gulp.task('archive:zip', function (done) {
 		}
 	});
 
+	/** @namespace archiver.pipe */
 	archiver.pipe(output);
 	archiver.finalize();
 });
@@ -90,7 +95,6 @@ gulp.task('copy:sql', function () {
 gulp.task('copy:index.html', function () {
 	'use strict';
 	return gulp.src(dirs.src + '/index.html')
-			.pipe(plugins.replace(/{{JQUERY_VERSION}}/g, pkg.devDependencies.jquery))
 			.pipe(gulp.dest(dirs.dist));
 });
 
@@ -151,7 +155,7 @@ gulp.task('lint:php', function (cb) {
 		dirs.src + '/**/*.php',
 		dirs.src + '!lib/**/*'],
 		{ limit: 10 },
-		function (err, stdout, stderr) {
+		function (err) {
 			if (err) {
 				cb(err);
 			} else {
